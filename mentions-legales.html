@@ -30,7 +30,7 @@
         <li>Éditeur : <strong>Franck Barrin</strong> — Entrepreneur individuel, nom commercial « Vizinote », profession libérale non réglementée, régime micro-BNC</li>
         <li>SIRET : 103 472 866 00013 — Code APE : 6201Z (programmation informatique)</li>
         <li>Adresse : 11 rue Chevalier Tristan, 56800 Ploërmel, France</li>
-        <li>Email : contact@brozapi.com</li>
+        <li>Contact : via le <a href="#contact">formulaire de contact</a> ci-dessous</li>
         <li>Directeur de la publication : <strong>Franck Barrin</strong></li>
         <li>TVA non applicable, article 293 B du CGI (franchise en base de TVA)</li>
       </ul>
@@ -51,7 +51,7 @@
         <li>Kit BadgeIA : livraison par email sous 7 jours ouvrés après réception du paiement.</li>
         <li>BadgeIA Suivi : abonnement mensuel sans engagement, résiliable à tout moment.</li>
         <li>Droit de rétractation de 14 jours pour les consommateurs, sauf renonciation expresse pour un contenu numérique fourni avant la fin du délai.</li>
-        <li>En cas de difficulté, contactez contact@brozapi.com.</li>
+        <li>En cas de difficulté, contactez-nous via le <a href="#contact">formulaire de contact</a> ci-dessous.</li>
       </ul>
 
       <h2 id="mediation">Médiation de la consommation</h2>
@@ -68,9 +68,32 @@
       <ul class="legal-list">
         <li>Les données sont stockées sur un serveur situé en Union européenne chez Ionos.</li>
         <li>Les emails ne sont jamais revendus ni cédés à des tiers.</li>
-        <li>Vous pouvez demander la suppression de vos données à tout moment à contact@brozapi.com.</li>
+        <li>Vous pouvez demander la suppression de vos données à tout moment via le <a href="#contact">formulaire de contact</a>.</li>
         <li>Le site n'utilise aucun cookie ni traceur.</li>
       </ul>
+
+      <h2 id="contact">Nous contacter</h2>
+      <p>Le moyen le plus rapide de nous joindre : ce formulaire. Réponse sous 7 jours ouvrés au plus tard.</p>
+      <form id="contact-form" class="contact-form" novalidate>
+        <div class="contact-form__row">
+          <label for="cf-name">Nom <span class="contact-form__opt">(facultatif)</span></label>
+          <input type="text" id="cf-name" name="name" maxlength="100" autocomplete="name">
+        </div>
+        <div class="contact-form__row">
+          <label for="cf-email">Votre email <span aria-hidden="true">*</span></label>
+          <input type="email" id="cf-email" name="email" required maxlength="254" autocomplete="email">
+        </div>
+        <div class="contact-form__row">
+          <label for="cf-message">Votre message <span aria-hidden="true">*</span></label>
+          <textarea id="cf-message" name="message" required minlength="10" maxlength="2000" rows="5"></textarea>
+        </div>
+        <div class="contact-form__hp" aria-hidden="true">
+          <label for="cf-website">Ne pas remplir</label>
+          <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn--primary" id="cf-submit">Envoyer le message</button>
+        <p id="cf-status" class="contact-form__status" role="status" aria-live="polite"></p>
+      </form>
 
       <p><a href="/">Retour à l'accueil</a></p>
     </div>
@@ -83,5 +106,66 @@
       </p>
     </div>
   </footer>
+  <style>
+    .contact-form { max-width: 560px; margin: 0 0 2rem; }
+    .contact-form__row { margin-bottom: 1rem; display: flex; flex-direction: column; gap: .35rem; }
+    .contact-form__row label { font-weight: 600; }
+    .contact-form__opt { font-weight: 400; opacity: .7; }
+    .contact-form input, .contact-form textarea {
+      padding: .6rem .75rem; border: 1px solid #c5c9d4; border-radius: 6px;
+      font: inherit; background: #fff; color: inherit;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      outline: 2px solid #003399; outline-offset: 1px; border-color: #003399;
+    }
+    .contact-form__hp { position: absolute; left: -9999px; top: -9999px; height: 1px; width: 1px; overflow: hidden; }
+    .contact-form__status { margin-top: .75rem; font-weight: 600; }
+    .contact-form__status--ok { color: #1a7f37; }
+    .contact-form__status--err { color: #b3261e; }
+  </style>
+  <script>
+    (function () {
+      var form = document.getElementById("contact-form");
+      var status = document.getElementById("cf-status");
+      var btn = document.getElementById("cf-submit");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        status.textContent = ""; status.className = "contact-form__status";
+        var email = document.getElementById("cf-email").value.trim();
+        var message = document.getElementById("cf-message").value.trim();
+        if (!email || message.length < 10) {
+          status.textContent = "Merci d'indiquer un email valide et un message d'au moins 10 caractères.";
+          status.classList.add("contact-form__status--err");
+          return;
+        }
+        btn.disabled = true; btn.textContent = "Envoi en cours…";
+        fetch("https://api.brozapi.com/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("cf-name").value.trim(),
+            email: email,
+            message: message,
+            website: document.getElementById("cf-website").value
+          })
+        }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (res.ok && res.d.ok) {
+              status.textContent = "Message envoyé. Nous vous répondrons à l'adresse indiquée.";
+              status.classList.add("contact-form__status--ok");
+              form.reset();
+            } else {
+              status.textContent = res.d.error || "Erreur lors de l'envoi. Réessayez plus tard.";
+              status.classList.add("contact-form__status--err");
+            }
+          })
+          .catch(function () {
+            status.textContent = "Erreur réseau. Réessayez plus tard.";
+            status.classList.add("contact-form__status--err");
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = "Envoyer le message"; });
+      });
+    })();
+  </script>
 </body>
 </html>
