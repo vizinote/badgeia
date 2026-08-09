@@ -70,6 +70,25 @@ def init_db() -> None:
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                email TEXT NOT NULL,
+                message TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+
+
+def save_message(name: str, email: str, message: str) -> None:
+    with sqlite3.connect(DATABASE_PATH) as conn:
+        conn.execute(
+            "INSERT INTO messages (name, email, message, created_at) VALUES (?, ?, ?, ?)",
+            (name, email, message, datetime.now(timezone.utc).isoformat()),
+        )
 
 
 def save_lead(email: str, url: str, score: str) -> None:
@@ -277,6 +296,50 @@ def lead():
         return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
 
     send_telegram_alert(email, url, score)
+    return make_cors_response({"ok": True})
+
+
+def send_contact_alert(name: str, email: str, message: str) -> None:
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    text = f"✉️ Message contact BadgeIA — {name or 'Anonyme'} ({email}) :\n{message[:500]}"
+    try:
+        requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            json={"chat_id": TELEGRAM_CHAT_ID, "text": text},
+            timeout=15,
+        )
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Échec envoi Telegram : %s", exc)
+
+
+@app.route("/contact", methods=["POST"])
+def contact():
+    client_ip = get_client_ip()
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()[:100]
+    email = (data.get("email") or "").strip().lower()
+    message = (data.get("message") or "").strip()[:2000]
+
+    # Pot de miel : les robots remplissent ce champ invisible, pas les humains.
+    if (data.get("website") or "").strip():
+        return make_cors_response({"ok": True})  # rejet silencieux
+
+    # Validation AVANT consommation du quota (une erreur 400 ne coûte rien).
+    if not EMAIL_RE.match(email):
+        return make_cors_response({"ok": False, "error": "Adresse email invalide."}, 400)
+    if len(message) < 10:
+        return make_cors_response({"ok": False, "error": "Message trop court (10 caractères minimum)."}, 400)
+
+    if not is_allowed(client_ip, "contact", limit=3, window_seconds=86400):
+        return make_cors_response({"ok": False, "error": "Quota de messages atteint. Réessayez demain."}, 429)
+
+    try:
+        save_message(name, email, message)
+    except sqlite3.Error:
+        return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
+
+    send_contact_alert(name, email, message)
     return make_cors_response({"ok": True})
 
 
