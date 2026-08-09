@@ -25,7 +25,12 @@ app = Flask(__name__)
 DATABASE_PATH = os.environ.get("DATABASE_PATH", "/data/leads.db")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
-ALLOWED_ORIGINS = {"https://badgeia.brozapi.com", "http://localhost"}
+ALLOWED_ORIGINS = {
+    "https://badgeia.brozapi.com",
+    "https://brozapi.com",
+    "https://www.brozapi.com",
+    "http://localhost",
+}
 MAX_BODY_SIZE = 2 * 1024 * 1024  # 2 Mo
 SCAN_TIMEOUT = 10
 USER_AGENT = "BadgeIA-Scanner/0.1 (+https://badgeia.brozapi.com)"
@@ -80,6 +85,25 @@ def init_db() -> None:
                 created_at TEXT NOT NULL
             )
             """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS scans (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                domain TEXT NOT NULL,
+                verdict TEXT NOT NULL,
+                systems_count INTEGER NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+
+
+def save_scan(domain: str, verdict: str, systems_count: int) -> None:
+    with sqlite3.connect(DATABASE_PATH) as conn:
+        conn.execute(
+            "INSERT INTO scans (domain, verdict, systems_count, created_at) VALUES (?, ?, ?, ?)",
+            (domain, verdict, systems_count, datetime.now(timezone.utc).isoformat()),
         )
 
 
@@ -259,6 +283,12 @@ def scan():
     systems = detect_systems(html)
     disclosure_found, disclosure_evidence = detect_disclosure(html)
     verdict = determine_verdict(systems, disclosure_found)
+
+    # Statistiques anonymisées : domaine + verdict uniquement (aucune IP ni donnée personnelle).
+    try:
+        save_scan(urlparse(url).hostname or url, verdict, len(systems))
+    except sqlite3.Error:
+        pass  # les stats ne doivent jamais casser un scan
 
     return make_cors_response(
         {
