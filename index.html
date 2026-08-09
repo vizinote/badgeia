@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BadgeIA — Votre chatbot est-il en règle avec l'AI Act ?</title>
+  <meta name="description" content="BadgeIA aide les indépendants et TPE à respecter l'obligation de transparence de l'AI Act européen : scanner gratuit, widget de disclosure et dossier de preuve.">
+  <meta property="og:title" content="BadgeIA — Transparence AI Act pour petits sites">
+  <meta property="og:description" content="Scanner gratuit, widget de disclosure et dossier de preuve pour respecter l'AI Act.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://badgeia.brozapi.com/">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="/" aria-label="BadgeIA — Accueil">
+        <span class="logo__name">BadgeIA</span>
+        <span class="logo__by">par Brozapi</span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="#scanner">Scanner</a>
+        <a href="#offres">Offres</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title">Votre chatbot est-il en règle avec l'AI Act ?</h1>
+        <p class="hero__subtitle">
+          L'AI Act européen impose la transparence dès la première interaction avec un utilisateur.
+          Applicable depuis le 2 août 2026, avec des amendes jusqu'à 15 M€ ou 3 % du chiffre d'affaires (article 99).
+        </p>
+        <a class="hero__cta" href="#scanner">Scanner mon site gratuitement</a>
+      </div>
+    </section>
+
+    <div class="urgency">
+      <div class="container">
+        <strong>Applicable depuis le 2 août 2026</strong> · Période de grâce du marquage jusqu'au 2 décembre 2026
+      </div>
+    </div>
+
+    <section id="scanner" class="section scanner" aria-labelledby="scanner-title">
+      <div class="container">
+        <h2 id="scanner-title" class="section__title">Scanner mon site gratuitement</h2>
+        <p class="section__lead">BadgeIA détecte les chatbots et assistants IA présents sur une page, puis vérifie si une mention de transparence est visible.</p>
+        <div class="scanner__box">
+          <form id="scan-form" class="form">
+            <div class="form__row">
+              <label for="scan-url" class="visually-hidden">Adresse du site</label>
+              <input id="scan-url" type="url" name="url" placeholder="https://mon-site.fr" required inputmode="url">
+              <button class="btn btn--primary" type="submit">Analyser</button>
+            </div>
+          </form>
+          <div id="scan-result" class="result" role="status" aria-live="polite"></div>
+
+          <div id="email-gate" class="email-gate" hidden>
+            <h3>Recevez le rapport complet + le guide de mise en conformité</h3>
+            <p>Indiquez votre email pour recevoir une synthèse personnalisée et nos recommandations.</p>
+            <form id="email-form" class="form">
+              <div class="form__row">
+                <label for="lead-email" class="visually-hidden">Adresse email</label>
+                <input id="lead-email" type="email" name="email" placeholder="vous@exemple.fr" required>
+                <button class="btn btn--secondary" type="submit">Recevoir le guide</button>
+              </div>
+            </form>
+            <p id="email-status" class="status-msg" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="loi-title">
+      <div class="container">
+        <h2 id="loi-title" class="section__title">Ce que dit la loi, simplement</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Chatbots et transparence des interactions</h3>
+            <p>L'article 50 de l'AI Act impose d'informer les utilisateurs qu'ils interagissent avec une IA (chatbot, assistant virtuel, etc.), dès le début de l'échange.</p>
+          </article>
+          <article class="card">
+            <h3>Contenus générés et étiquetage</h3>
+            <p>Les contenus générés par IA (texte, image, audio) doivent être identifiables. Les images doivent porter une mention ou un filigrane lisible.</p>
+          </article>
+          <article class="card">
+            <h3>Amendes et calendrier</h3>
+            <p>Le non-respect peut entraîner des sanctions jusqu'à 15 M€ ou 3 % du CA mondial. La transparence est applicable depuis le 2 août 2026.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="offres" class="section pricing" aria-labelledby="offres-title">
+      <div class="container">
+        <h2 id="offres-title" class="section__title">Nos offres</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Kit BadgeIA</h3>
+            <p class="price">39 € <span>une fois</span></p>
+            <ul class="features">
+              <li>Widget disclosure FR/EN, 4 coloris</li>
+              <li>Étiqueteur d'images</li>
+              <li>Page registre IA</li>
+              <li>Guide PDF de mise en conformité</li>
+              <li>Livré sous 7 jours par email</li>
+            </ul>
+            <a id="buy-kit" class="btn btn--primary" href="#scanner">Être prévenu du lancement</a>
+          </article>
+          <article class="card">
+            <h3>BadgeIA Suivi</h3>
+            <p class="price">6 € <span>/ mois</span></p>
+            <ul class="features">
+              <li>Tout le Kit BadgeIA</li>
+              <li>Dossier de preuve horodaté hébergé</li>
+              <li>Veille réglementaire</li>
+              <li>Multi-sites jusqu'à 5 domaines</li>
+              <li>Support par email</li>
+            </ul>
+            <a id="buy-suivi" class="btn btn--primary" href="#scanner">Être prévenu du lancement</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section faq" aria-labelledby="faq-title">
+      <div class="container">
+        <h2 id="faq-title" class="section__title">Foire aux questions</h2>
+        <details>
+          <summary>Est-ce une garantie de conformité ?</summary>
+          <p>Non. BadgeIA est un outil technique d'aide à la transparence. Il ne constitue ni un conseil juridique ni une garantie de conformité.</p>
+        </details>
+        <details>
+          <summary>Ça marche sur WordPress, Shopify ou Webflow ?</summary>
+          <p>Oui. Le widget s'installe en un snippet d'une ligne, sans plugin spécifique. Il fonctionne sur tous les sites statiques ou CMS.</p>
+        </details>
+        <details>
+          <summary>C'est quoi le dossier de preuve ?</summary>
+          <p>C'est une page hébergée chez BadgeIA qui centralise les captures et horodatages prouvant que votre site affiche bien la mention de transparence.</p>
+        </details>
+        <details>
+          <summary>Pourquoi si peu cher ?</summary>
+          <p>Le MVP est volontairement simple : automatisation, hébergement léger et pas de couture juridique. Le prix couvre le temps de mise en place et le suivi.</p>
+        </details>
+        <details>
+          <summary>Qui est derrière BadgeIA ?</summary>
+          <p>BadgeIA est un produit du studio Brozapi, construit et maintenu par des agents IA supervisés. L'objectif est de rendre l'AI Act accessible aux indépendants.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <p><strong>BadgeIA</strong><br>par Brozapi</p>
+        </div>
+        <div>
+          <p><a href="mentions-legales.html">Mentions légales &amp; CGV</a></p>
+          <p><a href="mentions-legales.html#confidentialite">Politique de confidentialité</a></p>
+        </div>
+        <div>
+          <p>Hébergé en UE · Zéro cookie · Zéro tracking</p>
+        </div>
+      </div>
+      <p class="footer__disclaimer">
+        BadgeIA est un outil technique d'aide à la transparence. Il ne constitue ni un conseil juridique ni une garantie de conformité.
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
