@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://badgeia.brozapi.com/sitemap.xml

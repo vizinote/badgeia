@@ -9,6 +9,28 @@
   <meta property="og:description" content="Scanner gratuit, widget de disclosure et dossier de preuve pour respecter l'AI Act.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://badgeia.brozapi.com/">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="https://badgeia.brozapi.com/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://badgeia.brozapi.com/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "BadgeIA est-il une garantie de conformité ?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Non. BadgeIA est un outil technique d'aide à la transparence (AI Act, article 50). Il ne constitue ni un conseil juridique ni une garantie de conformité."}},
+      {"@type": "Question", "name": "BadgeIA fonctionne-t-il sur WordPress, Shopify ou Webflow ?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Oui. Le widget s'installe avec un snippet d'une ligne, sans plugin spécifique, sur tout site statique ou CMS."}},
+      {"@type": "Question", "name": "Qu'est-ce que le dossier de preuve ?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Une page hébergée centralisant captures et horodatages prouvant que votre site affiche la mention de transparence."}},
+      {"@type": "Question", "name": "Combien coûte BadgeIA ?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Kit BadgeIA : 39 € une fois (widget, étiqueteur d'images, registre IA, guide). BadgeIA Suivi : 6 €/mois (dossier de preuve hébergé, veille réglementaire, multi-sites)."}},
+      {"@type": "Question", "name": "Qui est derrière BadgeIA ?",
+       "acceptedAnswer": {"@type": "Answer", "text": "BadgeIA est un produit du studio Brozapi, construit et maintenu par des agents IA supervisés."}}
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -55,10 +77,14 @@
           <form id="scan-form" class="form">
             <div class="form__row">
               <label for="scan-url" class="visually-hidden">Adresse du site</label>
-              <input id="scan-url" type="url" name="url" placeholder="https://mon-site.fr" required inputmode="url">
+              <input id="scan-url" type="text" name="url" placeholder="mon-site.fr" required inputmode="url" autocomplete="url" spellcheck="false">
               <button class="btn btn--primary" type="submit">Analyser</button>
             </div>
           </form>
+          <p class="examples">Essayer avec un site connu :
+            <button type="button" class="chip" data-url="crisp.chat">crisp.chat</button>
+            <button type="button" class="chip" data-url="intercom.com">intercom.com</button>
+          </p>
           <div id="scan-result" class="result" role="status" aria-live="polite"></div>
 
           <div id="email-gate" class="email-gate" hidden>
@@ -112,6 +138,7 @@
               <li>Livré sous 7 jours par email</li>
             </ul>
             <a id="buy-kit" class="btn btn--primary" href="#scanner">Être prévenu du lancement</a>
+            <button id="demo-widget" class="btn btn--secondary" type="button">▶ Voir le widget en action</button>
           </article>
           <article class="card">
             <h3>BadgeIA Suivi</h3>
@@ -146,7 +173,7 @@
         </details>
         <details>
           <summary>Pourquoi si peu cher ?</summary>
-          <p>Le MVP est volontairement simple : automatisation, hébergement léger et pas de couture juridique. Le prix couvre le temps de mise en place et le suivi.</p>
+          <p>Le MVP est volontairement simple : automatisation poussée, hébergement léger et aucun conseil juridique individualisé. Le prix couvre le temps de mise en place et le suivi.</p>
         </details>
         <details>
           <summary>Qui est derrière BadgeIA ?</summary>

@@ -11,7 +11,7 @@ import sqlite3
 import time
 from datetime import datetime, timezone
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 import requests
 from flask import Flask, jsonify, request
@@ -105,6 +105,20 @@ def is_private_url(parsed: urlparse) -> bool:
     return False
 
 
+def normalize_url(url: str) -> str:
+    """Accepte 'mon-site.fr' ou 'www.mon-site.fr/path' : ajoute https:// si absent."""
+    url = url.strip()
+    if url and "://" not in url:
+        url = "https://" + url
+    try:
+        p = urlparse(url)
+        if p.scheme and p.netloc:
+            url = urlunparse((p.scheme.lower(), p.netloc.lower(), p.path or "/", p.params, p.query, ""))
+    except Exception:
+        pass
+    return url
+
+
 def validate_url(url: str) -> str | None:
     try:
         parsed = urlparse(url)
@@ -112,6 +126,8 @@ def validate_url(url: str) -> str | None:
         return "URL invalide."
     if parsed.scheme not in {"http", "https"}:
         return "Seuls les protocoles http et https sont autorisés."
+    if not parsed.hostname or "." not in parsed.hostname:
+        return "URL invalide : indiquez un nom de domaine (ex. mon-site.fr)."
     if is_private_url(parsed):
         return "Les adresses locales ou privées ne sont pas autorisées."
     return None
@@ -197,13 +213,13 @@ def make_cors_response(data: dict, status: int = 200):
 @app.route("/scan", methods=["GET"])
 def scan():
     client_ip = get_client_ip()
-    if not is_allowed(client_ip, "scan", limit=10, window_seconds=3600):
-        return make_cors_response({"ok": False, "error": "Quota de scans atteint. Réessayez dans une heure."}, 429)
-
-    url = request.args.get("url", "").strip()
+    url = normalize_url(request.args.get("url", ""))
     error = validate_url(url)
     if error:
         return make_cors_response({"ok": False, "error": error}, 400)
+
+    if not is_allowed(client_ip, "scan", limit=30, window_seconds=3600):
+        return make_cors_response({"ok": False, "error": "Quota de scans atteint. Réessayez dans une heure."}, 429)
 
     try:
         with fetch_page(url, timeout=SCAN_TIMEOUT) as resp:

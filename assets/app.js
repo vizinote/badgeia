@@ -119,7 +119,12 @@ const API_BASE = "https://api.brozapi.com";
     scanForm.addEventListener("submit", async function (event) {
       event.preventDefault();
       const input = document.getElementById("scan-url");
-      const url = input.value.trim();
+      let url = input.value.trim();
+      // Accepte "mon-site.fr" sans schéma : on ajoute https:// automatiquement.
+      if (url && !url.includes("://")) {
+        url = "https://" + url;
+        input.value = url;
+      }
       const submitBtn = scanForm.querySelector("button[type='submit']");
       const originalBtnText = submitBtn.innerHTML;
 
@@ -129,9 +134,10 @@ const API_BASE = "https://api.brozapi.com";
       }
 
       try {
-        new URL(url);
+        const parsed = new URL(url);
+        if (!parsed.hostname.includes(".")) throw new Error("no dot");
       } catch (e) {
-        setStatus(scanResult, "Veuillez saisir une URL valide (https://...).", "error");
+        setStatus(scanResult, "Veuillez saisir une adresse valide (ex. mon-site.fr).", "error");
         return;
       }
 
@@ -232,4 +238,30 @@ const API_BASE = "https://api.brozapi.com";
 
   setupBuyButton(buyKitBtn, "kit39");
   setupBuyButton(buySuiviBtn, "suivi6");
+
+  // Exemples cliquables : remplissent le champ et lancent le scan.
+  document.querySelectorAll(".chip[data-url]").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      const input = document.getElementById("scan-url");
+      input.value = chip.getAttribute("data-url");
+      scanForm.requestSubmit();
+    });
+  });
+
+  // Démo du widget : injecte le vrai snippet produit sur la page.
+  const demoBtn = document.getElementById("demo-widget");
+  if (demoBtn) {
+    demoBtn.addEventListener("click", function () {
+      if (document.getElementById("badgeia-disclosure-widget")) return;
+      const s = document.createElement("script");
+      s.src = "widget/badgeia.js";
+      s.setAttribute("data-lang", "fr");
+      s.setAttribute("data-position", "bottom-right");
+      s.setAttribute("data-color", "blue");
+      s.async = false;
+      document.body.appendChild(s);
+      demoBtn.textContent = "Widget affiché en bas à droite ↘ (refermable)";
+      demoBtn.disabled = true;
+    });
+  }
 })();

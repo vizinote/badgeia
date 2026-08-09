@@ -584,3 +584,29 @@ a:focus {
     animation: none;
   }
 }
+
+/* Exemples cliquables du scanner */
+.examples {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+.chip {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid #003399;
+  border-radius: 999px;
+  background: #fff;
+  color: #003399;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.chip:hover, .chip:focus-visible {
+  background: #003399;
+  color: #fff;
+}
+#demo-widget {
+  margin-top: 0.6rem;
+}
