@@ -244,7 +244,11 @@ const API_BASE = "https://api.brozapi.com";
     chip.addEventListener("click", function () {
       const input = document.getElementById("scan-url");
       input.value = chip.getAttribute("data-url");
-      scanForm.requestSubmit();
+      if (typeof scanForm.requestSubmit === "function") {
+        scanForm.requestSubmit();
+      } else {
+        scanForm.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      }
     });
   });
 
