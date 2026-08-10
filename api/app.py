@@ -252,6 +252,20 @@ def make_cors_response(data: dict, status: int = 200):
     return resp
 
 
+@app.after_request
+def add_cors_headers(response):
+    """Ajoute les en-têtes CORS à toutes les réponses, y compris les pré-vols OPTIONS."""
+    origin = request.headers.get("Origin", "")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Vary"] = "Origin"
+        if request.method == "OPTIONS":
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Accept"
+            response.headers["Access-Control-Max-Age"] = "86400"
+    return response
+
+
 # Routes ---------------------------------------------------------------------------
 @app.route("/scan", methods=["GET"])
 def scan():
@@ -382,3 +396,4 @@ def health():
 if __name__ == "__main__":
     init_db()
     serve(app, host="0.0.0.0", port=8080)
+
