@@ -5,8 +5,8 @@
 
 // TODO(D16): renseigner les liens Stripe avant le lancement.
 const STRIPE_LINKS = {
-  kit39: "",
-  suivi6: "",
+  kit39: "https://buy.stripe.com/bJeeV7cRb5OtaFZbzLcZa04",
+  suivi6: "https://buy.stripe.com/aFabIVaJ31yd01lbzLcZa05",
 };
 
 const API_BASE = "https://api.brozapi.com";
