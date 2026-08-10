@@ -11,6 +11,26 @@ const STRIPE_LINKS = {
 
 const API_BASE = "https://api.brozapi.com";
 
+/**
+ * Envoie un événement de mesure d'audience anonyme.
+ * Aucun cookie, aucune IP, aucun identifiant n'est transmis.
+ */
+function trackEvent(event, path) {
+  try {
+    var payload = JSON.stringify({ event: event, path: path });
+    navigator.sendBeacon
+      ? navigator.sendBeacon(API_BASE + "/track", new Blob([payload], { type: "application/json" }))
+      : fetch(API_BASE + "/track", {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+        }).catch(function () {});
+  } catch (e) {
+    // silencieux : la mesure ne doit jamais bloquer le site
+  }
+}
+
 (function () {
   "use strict";
 
@@ -238,6 +258,23 @@ const API_BASE = "https://api.brozapi.com";
 
   setupBuyButton(buyKitBtn, "kit39");
   setupBuyButton(buySuiviBtn, "suivi6");
+
+  // Mesures d'audience anonymes (aucun cookie, aucune IP).
+  document.addEventListener("DOMContentLoaded", function () {
+    trackEvent("pageview", location.pathname || "/");
+  });
+
+  if (buyKitBtn) {
+    buyKitBtn.addEventListener("click", function () {
+      trackEvent("click_buy_kit", location.pathname || "/");
+    });
+  }
+
+  if (buySuiviBtn) {
+    buySuiviBtn.addEventListener("click", function () {
+      trackEvent("click_buy_suivi", location.pathname || "/");
+    });
+  }
 
   // Exemples cliquables : remplissent le champ et lancent le scan.
   document.querySelectorAll(".chip[data-url]").forEach(function (chip) {
