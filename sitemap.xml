@@ -2,4 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://badgeia.brozapi.com/</loc><lastmod>2026-08-10</lastmod><priority>1.0</priority></url>
   <url><loc>https://badgeia.brozapi.com/mentions-legales.html</loc><lastmod>2026-08-10</lastmod><priority>0.2</priority></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-article-50-obligations-chatbot.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-intercom.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-crisp.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-tidio.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-chatbase.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/ai-act-botpress.html</loc></url>
+  <url><loc>https://badgeia.brozapi.com/blog/</loc></url>
 </urlset>
