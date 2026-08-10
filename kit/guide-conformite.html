@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide Pratique AI Act Article 50 — BadgeIA</title>
+  <meta name="description" content="Guide pratique pour les TPE/PME : images générées par IA et conformité à l'article 50 de l'AI Act européen.">
+  <meta property="og:title" content="Guide Pratique AI Act Article 50 — BadgeIA">
+  <meta property="og:description" content="Mentions, checklists et FAQ pour rendre vos images IA transparentes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://badgeia.brozapi.com/kit/guide-conformite.html">
+  <meta property="og:locale" content="fr_FR">
+  <link rel="canonical" href="https://badgeia.brozapi.com/kit/guide-conformite.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    :root {
+      --blue: #003399;
+      --blue-dark: #002266;
+      --blue-light: #e6ecf9;
+      --gray-900: #1a1a1a;
+      --gray-700: #454545;
+      --gray-500: #737373;
+      --gray-300: #d4d4d4;
+      --gray-100: #f7f7f7;
+      --white: #ffffff;
+      --radius: 0.5rem;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--gray-900);
+      background: var(--white);
+      line-height: 1.65;
+      font-size: 11pt;
+    }
+    a { color: var(--blue); text-decoration: underline; text-underline-offset: 0.15em; }
+    a:hover, a:focus { color: var(--blue-dark); }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+    .skip-link {
+      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+    }
+    .skip-link:focus {
+      position: static; width: auto; height: auto; padding: 0.5rem 1rem;
+      background: var(--blue); color: var(--white);
+    }
+    header.site-header {
+      border-bottom: 2px solid var(--blue);
+      padding: 1.25rem 1.5rem;
+      background: var(--white);
+    }
+    header.site-header .inner {
+      max-width: 210mm; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .logo { text-decoration: none; color: var(--gray-900); display: flex; align-items: baseline; gap: 0.4rem; }
+    .logo strong { font-size: 1.4rem; color: var(--blue); }
+    .logo span { font-size: 0.9rem; color: var(--gray-500); }
+    nav.print-nav a { margin-left: 1rem; font-size: 0.9rem; }
+    main {
+      max-width: 210mm; margin: 0 auto; padding: 1.5rem;
+    }
+    .doc-meta {
+      background: var(--gray-100); border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem; margin-bottom: 1.5rem; border-radius: var(--radius);
+      font-size: 0.95rem; color: var(--gray-700);
+    }
+    .doc-meta strong { color: var(--blue-dark); }
+    #table-des-matieres {
+      background: var(--blue-light); padding: 1.25rem 1.5rem;
+      border-radius: var(--radius); margin-bottom: 2rem;
+      page-break-inside: avoid;
+    }
+    #table-des-matieres h2 {
+      margin-top: 0; font-size: 1.2rem; color: var(--blue-dark);
+    }
+    #table-des-matieres ul {
+      margin: 0; padding-left: 1.25rem; column-count: 2; column-gap: 2rem;
+    }
+    #table-des-matieres li { margin-bottom: 0.35rem; }
+    #table-des-matieres a { text-decoration: none; }
+    h1, h2, h3, h4 {
+      color: var(--gray-900); line-height: 1.25;
+      page-break-after: avoid;
+    }
+    h1 { font-size: 1.9rem; margin-top: 0; margin-bottom: 0.5rem; color: var(--blue-dark); }
+    h2 { font-size: 1.4rem; margin-top: 2rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--gray-300); padding-bottom: 0.35rem; }
+    h3 { font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--blue-dark); }
+    h4 { font-size: 1rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    p { margin: 0 0 0.75rem; orphans: 3; widows: 3; }
+    ul, ol { margin: 0 0 0.75rem; padding-left: 1.5rem; }
+    li { margin-bottom: 0.35rem; }
+    blockquote {
+      margin: 1rem 0; padding: 0.75rem 1rem;
+      border-left: 4px solid var(--blue);
+      background: var(--gray-100); font-style: italic;
+      page-break-inside: avoid;
+    }
+    blockquote p { margin-bottom: 0.4rem; }
+    blockquote p:last-child { margin-bottom: 0; }
+    table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0;
+      font-size: 0.95rem; page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid var(--gray-300); padding: 0.55rem 0.7rem; text-align: left; vertical-align: top;
+    }
+    th { background: var(--blue-light); font-weight: 600; }
+    tr:nth-child(even) { background: var(--gray-100); }
+    hr {
+      border: 0; border-top: 1px solid var(--gray-300); margin: 2rem 0;
+    }
+    section { page-break-inside: avoid; }
+    .disclaimer {
+      background: #fff8e6; border: 1px solid #f0c000;
+      padding: 1.25rem; border-radius: var(--radius); margin-top: 2rem;
+      page-break-inside: avoid;
+    }
+    .disclaimer h2 { margin-top: 0; color: #8a5b00; border-bottom-color: #f0c000; }
+    .disclaimer strong { color: #8a5b00; }
+    footer.site-footer {
+      border-top: 1px solid var(--gray-300); margin-top: 3rem; padding: 1.25rem 1.5rem;
+      font-size: 0.85rem; color: var(--gray-500); text-align: center;
+    }
+    footer.site-footer a { color: var(--gray-500); }
+    @media print {
+      @page {
+        size: A4;
+        margin: 18mm 16mm 22mm 16mm;
+      }
+      body {
+        background: var(--white);
+        font-size: 10.5pt;
+        line-height: 1.55;
+      }
+      header.site-header, footer.site-footer {
+        /* Ne pas répéter artificiellement : le header/footer s'impriment avec le flux. */
+      }
+      .skip-link, nav.print-nav { display: none; }
+      a { text-decoration: none; color: var(--gray-900); }
+      a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em; color: var(--gray-500); word-break: break-all;
+      }
+      /* Évite les liens internes lourds à l'impression */
+      a[href^="#"]::after { content: none; }
+      #table-des-matieres { column-count: 1; }
+      #table-des-matieres ul { column-count: 2; }
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.25rem; }
+      h3 { font-size: 1.05rem; }
+      table { font-size: 0.9rem; }
+      .page-break { page-break-before: always; }
+    }
+    @media screen and (max-width: 600px) {
+      #table-des-matieres ul { column-count: 1; }
+      header.site-header .inner { flex-direction: column; align-items: flex-start; }
+      nav.print-nav a { margin-left: 0; margin-right: 1rem; }
+      main { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="site-header">
+    <div class="inner">
+      <a class="logo" href="/" aria-label="BadgeIA — Accueil">
+        <strong>BadgeIA</strong>
+        <span>par Brozapi</span>
+      </a>
+      <nav class="print-nav" aria-label="Navigation">
+        <a href="/">Accueil</a>
+        <a href="/kit/etiqueteur.html">Étiqueteur</a>
+        <a href="/mentions-legales.html">Mentions légales</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <p class="doc-meta">
+      <strong>Kit BadgeIA</strong> — Version brouillon<br>
+      Ce guide est une aide à la compréhension à destination des petites entreprises. Il ne constitue pas un avis juridique et ne remplace pas la consultation d'un professionnel du droit qualifié.
+    </p>
+
+    <div class="toc"><span class="toctitle">Table des matières</span><ul>
+<li><a href="#guide-pratique-ai-act-article-50-mise-en-conformite-pour-les-tpepme">Guide Pratique — AI Act Article 50 : Mise en Conformité pour les TPE/PME</a><ul>
+<li><a href="#images-generees-par-intelligence-artificielle">Images générées par Intelligence Artificielle</a></li>
+<li><a href="#table-des-matieres">Table des matières</a></li>
+<li><a href="#1-quest-ce-que-lai-act-et-a-qui-sapplique-t-il">1. Qu'est-ce que l'AI Act et à qui s'applique-t-il ?</a><ul>
+<li><a href="#11-quest-ce-que-lai-act">1.1. Qu'est-ce que l'AI Act ?</a></li>
+<li><a href="#12-a-qui-sapplique-ce-reglement">1.2. À qui s'applique ce règlement ?</a></li>
+<li><a href="#13-quest-ce-quun-systeme-dia-generative">1.3. Qu'est-ce qu'un "système d'IA générative" ?</a></li>
+</ul>
+</li>
+<li><a href="#2-comprendre-larticle-50-les-obligations-de-transparence">2. Comprendre l'article 50 : les obligations de transparence</a><ul>
+<li><a href="#21-le-principe-general">2.1. Le principe général</a></li>
+<li><a href="#22-le-cas-des-contenus-generes-par-ia">2.2. Le cas des contenus générés par IA</a></li>
+<li><a href="#23-pourquoi-cette-obligation">2.3. Pourquoi cette obligation ?</a></li>
+</ul>
+</li>
+<li><a href="#3-obligations-cles-pour-les-images-generees-par-ia">3. Obligations clés pour les images générées par IA</a><ul>
+<li><a href="#31-identifier-les-images-concernees">3.1. Identifier les images concernées</a></li>
+<li><a href="#32-les-obligations-principales">3.2. Les obligations principales</a></li>
+<li><a href="#33-quand-lobligation-sapplique-t-elle">3.3. Quand l'obligation s'applique-t-elle ?</a></li>
+<li><a href="#34-les-exceptions-et-nuances">3.4. Les exceptions et nuances</a></li>
+<li><a href="#35-quelles-sont-les-bonnes-pratiques">3.5. Quelles sont les bonnes pratiques ?</a></li>
+</ul>
+</li>
+<li><a href="#4-exemples-de-mentions-de-transparence-fren">4. Exemples de mentions de transparence (FR/EN)</a><ul>
+<li><a href="#41-mentions-generales-pour-un-site-web">4.1. Mentions générales pour un site web</a><ul>
+<li><a href="#francais-version-courte">Français — Version courte</a></li>
+<li><a href="#francais-version-detaillee">Français — Version détaillée</a></li>
+<li><a href="#anglais-version-courte">Anglais — Version courte</a></li>
+<li><a href="#anglais-version-detaillee">Anglais — Version détaillée</a></li>
+</ul>
+</li>
+<li><a href="#42-mentions-pour-les-reseaux-sociaux">4.2. Mentions pour les réseaux sociaux</a><ul>
+<li><a href="#francais-legende-de-publication">Français — Légende de publication</a></li>
+<li><a href="#anglais-legende-de-publication">Anglais — Légende de publication</a></li>
+</ul>
+</li>
+<li><a href="#43-mentions-pour-un-e-commerce">4.3. Mentions pour un e-commerce</a><ul>
+<li><a href="#francais-fiche-produit">Français — Fiche produit</a></li>
+<li><a href="#anglais-fiche-produit">Anglais — Fiche produit</a></li>
+</ul>
+</li>
+<li><a href="#44-mentions-pour-un-blog-ou-media-en-ligne">4.4. Mentions pour un blog ou média en ligne</a><ul>
+<li><a href="#francais-legende-dimage">Français — Légende d'image</a></li>
+<li><a href="#anglais-legende-dimage">Anglais — Légende d'image</a></li>
+</ul>
+</li>
+<li><a href="#45-mentions-pour-une-agence-ou-prestataire">4.5. Mentions pour une agence ou prestataire</a><ul>
+<li><a href="#francais-page-de-presentation-de-portfolio">Français — Page de présentation de portfolio</a></li>
+<li><a href="#anglais-page-de-portfolio">Anglais — Page de portfolio</a></li>
+</ul>
+</li>
+<li><a href="#46-mentions-pour-un-pied-de-page-ou-page-dediee">4.6. Mentions pour un pied de page ou page dédiée</a><ul>
+<li><a href="#francais">Français</a></li>
+<li><a href="#anglais">Anglais</a></li>
+</ul>
+</li>
+<li><a href="#47-exemple-de-page-dediee-texte-type">4.7. Exemple de page dédiée (texte type)</a><ul>
+<li><a href="#francais_1">Français</a></li>
+<li><a href="#anglais_1">Anglais</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#5-checklist-de-conformite-par-type-de-site">5. Checklist de conformité par type de site</a><ul>
+<li><a href="#51-site-e-commerce">5.1. Site e-commerce</a></li>
+<li><a href="#52-blog-ou-media-en-ligne">5.2. Blog ou média en ligne</a></li>
+<li><a href="#53-site-dagence-ou-freelance">5.3. Site d'agence ou freelance</a></li>
+<li><a href="#54-site-institutionnel-ou-corporate">5.4. Site institutionnel ou corporate</a></li>
+<li><a href="#55-reseaux-sociaux-tous-types">5.5. Réseaux sociaux (tous types)</a></li>
+</ul>
+</li>
+<li><a href="#6-faq">6. FAQ</a><ul>
+<li><a href="#61-suis-je-oblige-de-mentionner-que-mes-images-sont-generees-par-ia">6.1. Suis-je obligé de mentionner que mes images sont générées par IA ?</a></li>
+<li><a href="#62-que-se-passe-t-il-si-je-ne-mets-pas-de-mention">6.2. Que se passe-t-il si je ne mets pas de mention ?</a></li>
+<li><a href="#63-dois-je-mentionner-le-nom-de-loutil-utilise-midjourney-dall-e-etc">6.3. Dois-je mentionner le nom de l'outil utilisé (Midjourney, DALL-E, etc.) ?</a></li>
+<li><a href="#64-les-images-retouchees-par-ia-sont-elles-concernees">6.4. Les images retouchées par IA sont-elles concernées ?</a></li>
+<li><a href="#65-dois-je-mettre-une-mention-sur-chaque-image-ou-une-mention-generale-suffit-elle">6.5. Dois-je mettre une mention sur chaque image ou une mention générale suffit-elle ?</a></li>
+<li><a href="#66-le-badge-de-transparence-est-il-suffisant">6.6. Le badge de transparence est-il suffisant ?</a></li>
+<li><a href="#67-mes-clients-peuvent-ils-refuser-que-jutilise-des-images-generees-par-ia">6.7. Mes clients peuvent-ils refuser que j'utilise des images générées par IA ?</a></li>
+<li><a href="#68-que-faire-si-jai-publie-des-images-ia-avant-de-connaitre-cette-obligation">6.8. Que faire si j'ai publié des images IA avant de connaître cette obligation ?</a></li>
+<li><a href="#69-lobligation-sapplique-t-elle-aux-images-generees-par-ia-pour-un-usage-strictement-interne">6.9. L'obligation s'applique-t-elle aux images générées par IA pour un usage strictement interne ?</a></li>
+<li><a href="#610-ou-puis-je-trouver-le-texte-officiel-du-ai-act">6.10. Où puis-je trouver le texte officiel du AI Act ?</a></li>
+</ul>
+</li>
+<li><a href="#7-ressources-utiles-et-prochaines-etapes">7. Ressources utiles et prochaines étapes</a><ul>
+<li><a href="#71-ressources-officielles">7.1. Ressources officielles</a></li>
+<li><a href="#72-outils-recommandes">7.2. Outils recommandés</a></li>
+<li><a href="#73-prochaines-etapes-concretes">7.3. Prochaines étapes concrètes</a></li>
+</ul>
+</li>
+<li><a href="#8-disclaimer-juridique">8. Disclaimer juridique</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+    <h1 id="guide-pratique-ai-act-article-50-mise-en-conformite-pour-les-tpepme"><a class="toclink" href="#guide-pratique-ai-act-article-50-mise-en-conformite-pour-les-tpepme">Guide Pratique — AI Act Article 50 : Mise en Conformité pour les TPE/PME</a></h1>
+<h2 id="images-generees-par-intelligence-artificielle"><a class="toclink" href="#images-generees-par-intelligence-artificielle">Images générées par Intelligence Artificielle</a></h2>
+<hr />
+<p><strong>Kit BadgeIA</strong> — Version brouillon<br />
+<em>Ce guide est une aide à la compréhension à destination des petites entreprises. Il ne constitue pas un avis juridique et ne remplace pas la consultation d'un professionnel du droit qualifié.</em></p>
+<hr />
+<h2 id="table-des-matieres"><a class="toclink" href="#table-des-matieres">Table des matières</a></h2>
+<div class="toc"><span class="toctitle">Table des matières</span><ul>
+<li><a href="#guide-pratique-ai-act-article-50-mise-en-conformite-pour-les-tpepme">Guide Pratique — AI Act Article 50 : Mise en Conformité pour les TPE/PME</a><ul>
+<li><a href="#images-generees-par-intelligence-artificielle">Images générées par Intelligence Artificielle</a></li>
+<li><a href="#table-des-matieres">Table des matières</a></li>
+<li><a href="#1-quest-ce-que-lai-act-et-a-qui-sapplique-t-il">1. Qu'est-ce que l'AI Act et à qui s'applique-t-il ?</a><ul>
+<li><a href="#11-quest-ce-que-lai-act">1.1. Qu'est-ce que l'AI Act ?</a></li>
+<li><a href="#12-a-qui-sapplique-ce-reglement">1.2. À qui s'applique ce règlement ?</a></li>
+<li><a href="#13-quest-ce-quun-systeme-dia-generative">1.3. Qu'est-ce qu'un "système d'IA générative" ?</a></li>
+</ul>
+</li>
+<li><a href="#2-comprendre-larticle-50-les-obligations-de-transparence">2. Comprendre l'article 50 : les obligations de transparence</a><ul>
+<li><a href="#21-le-principe-general">2.1. Le principe général</a></li>
+<li><a href="#22-le-cas-des-contenus-generes-par-ia">2.2. Le cas des contenus générés par IA</a></li>
+<li><a href="#23-pourquoi-cette-obligation">2.3. Pourquoi cette obligation ?</a></li>
+</ul>
+</li>
+<li><a href="#3-obligations-cles-pour-les-images-generees-par-ia">3. Obligations clés pour les images générées par IA</a><ul>
+<li><a href="#31-identifier-les-images-concernees">3.1. Identifier les images concernées</a></li>
+<li><a href="#32-les-obligations-principales">3.2. Les obligations principales</a></li>
+<li><a href="#33-quand-lobligation-sapplique-t-elle">3.3. Quand l'obligation s'applique-t-elle ?</a></li>
+<li><a href="#34-les-exceptions-et-nuances">3.4. Les exceptions et nuances</a></li>
+<li><a href="#35-quelles-sont-les-bonnes-pratiques">3.5. Quelles sont les bonnes pratiques ?</a></li>
+</ul>
+</li>
+<li><a href="#4-exemples-de-mentions-de-transparence-fren">4. Exemples de mentions de transparence (FR/EN)</a><ul>
+<li><a href="#41-mentions-generales-pour-un-site-web">4.1. Mentions générales pour un site web</a><ul>
+<li><a href="#francais-version-courte">Français — Version courte</a></li>
+<li><a href="#francais-version-detaillee">Français — Version détaillée</a></li>
+<li><a href="#anglais-version-courte">Anglais — Version courte</a></li>
+<li><a href="#anglais-version-detaillee">Anglais — Version détaillée</a></li>
+</ul>
+</li>
+<li><a href="#42-mentions-pour-les-reseaux-sociaux">4.2. Mentions pour les réseaux sociaux</a><ul>
+<li><a href="#francais-legende-de-publication">Français — Légende de publication</a></li>
+<li><a href="#anglais-legende-de-publication">Anglais — Légende de publication</a></li>
+</ul>
+</li>
+<li><a href="#43-mentions-pour-un-e-commerce">4.3. Mentions pour un e-commerce</a><ul>
+<li><a href="#francais-fiche-produit">Français — Fiche produit</a></li>
+<li><a href="#anglais-fiche-produit">Anglais — Fiche produit</a></li>
+</ul>
+</li>
+<li><a href="#44-mentions-pour-un-blog-ou-media-en-ligne">4.4. Mentions pour un blog ou média en ligne</a><ul>
+<li><a href="#francais-legende-dimage">Français — Légende d'image</a></li>
+<li><a href="#anglais-legende-dimage">Anglais — Légende d'image</a></li>
+</ul>
+</li>
+<li><a href="#45-mentions-pour-une-agence-ou-prestataire">4.5. Mentions pour une agence ou prestataire</a><ul>
+<li><a href="#francais-page-de-presentation-de-portfolio">Français — Page de présentation de portfolio</a></li>
+<li><a href="#anglais-page-de-portfolio">Anglais — Page de portfolio</a></li>
+</ul>
+</li>
+<li><a href="#46-mentions-pour-un-pied-de-page-ou-page-dediee">4.6. Mentions pour un pied de page ou page dédiée</a><ul>
+<li><a href="#francais">Français</a></li>
+<li><a href="#anglais">Anglais</a></li>
+</ul>
+</li>
+<li><a href="#47-exemple-de-page-dediee-texte-type">4.7. Exemple de page dédiée (texte type)</a><ul>
+<li><a href="#francais_1">Français</a></li>
+<li><a href="#anglais_1">Anglais</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#5-checklist-de-conformite-par-type-de-site">5. Checklist de conformité par type de site</a><ul>
+<li><a href="#51-site-e-commerce">5.1. Site e-commerce</a></li>
+<li><a href="#52-blog-ou-media-en-ligne">5.2. Blog ou média en ligne</a></li>
+<li><a href="#53-site-dagence-ou-freelance">5.3. Site d'agence ou freelance</a></li>
+<li><a href="#54-site-institutionnel-ou-corporate">5.4. Site institutionnel ou corporate</a></li>
+<li><a href="#55-reseaux-sociaux-tous-types">5.5. Réseaux sociaux (tous types)</a></li>
+</ul>
+</li>
+<li><a href="#6-faq">6. FAQ</a><ul>
+<li><a href="#61-suis-je-oblige-de-mentionner-que-mes-images-sont-generees-par-ia">6.1. Suis-je obligé de mentionner que mes images sont générées par IA ?</a></li>
+<li><a href="#62-que-se-passe-t-il-si-je-ne-mets-pas-de-mention">6.2. Que se passe-t-il si je ne mets pas de mention ?</a></li>
+<li><a href="#63-dois-je-mentionner-le-nom-de-loutil-utilise-midjourney-dall-e-etc">6.3. Dois-je mentionner le nom de l'outil utilisé (Midjourney, DALL-E, etc.) ?</a></li>
+<li><a href="#64-les-images-retouchees-par-ia-sont-elles-concernees">6.4. Les images retouchées par IA sont-elles concernées ?</a></li>
+<li><a href="#65-dois-je-mettre-une-mention-sur-chaque-image-ou-une-mention-generale-suffit-elle">6.5. Dois-je mettre une mention sur chaque image ou une mention générale suffit-elle ?</a></li>
+<li><a href="#66-le-badge-de-transparence-est-il-suffisant">6.6. Le badge de transparence est-il suffisant ?</a></li>
+<li><a href="#67-mes-clients-peuvent-ils-refuser-que-jutilise-des-images-generees-par-ia">6.7. Mes clients peuvent-ils refuser que j'utilise des images générées par IA ?</a></li>
+<li><a href="#68-que-faire-si-jai-publie-des-images-ia-avant-de-connaitre-cette-obligation">6.8. Que faire si j'ai publié des images IA avant de connaître cette obligation ?</a></li>
+<li><a href="#69-lobligation-sapplique-t-elle-aux-images-generees-par-ia-pour-un-usage-strictement-interne">6.9. L'obligation s'applique-t-elle aux images générées par IA pour un usage strictement interne ?</a></li>
+<li><a href="#610-ou-puis-je-trouver-le-texte-officiel-du-ai-act">6.10. Où puis-je trouver le texte officiel du AI Act ?</a></li>
+</ul>
+</li>
+<li><a href="#7-ressources-utiles-et-prochaines-etapes">7. Ressources utiles et prochaines étapes</a><ul>
+<li><a href="#71-ressources-officielles">7.1. Ressources officielles</a></li>
+<li><a href="#72-outils-recommandes">7.2. Outils recommandés</a></li>
+<li><a href="#73-prochaines-etapes-concretes">7.3. Prochaines étapes concrètes</a></li>
+</ul>
+</li>
+<li><a href="#8-disclaimer-juridique">8. Disclaimer juridique</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="1-quest-ce-que-lai-act-et-a-qui-sapplique-t-il"><a class="toclink" href="#1-quest-ce-que-lai-act-et-a-qui-sapplique-t-il">1. Qu'est-ce que l'AI Act et à qui s'applique-t-il ?</a></h2>
+<h3 id="11-quest-ce-que-lai-act"><a class="toclink" href="#11-quest-ce-que-lai-act">1.1. Qu'est-ce que l'AI Act ?</a></h3>
+<p>L'AI Act (ou "Artificial Intelligence Act") est un règlement de l'Union européenne qui établit un cadre réglementaire pour le développement, la mise sur le marché et l'utilisation de systèmes d'intelligence artificielle au sein de l'Union européenne. Ce texte vise à garantir que les technologies d'IA soient utilisées de manière sûre, transparente et respectueuse des droits fondamentaux.</p>
+<h3 id="12-a-qui-sapplique-ce-reglement"><a class="toclink" href="#12-a-qui-sapplique-ce-reglement">1.2. À qui s'applique ce règlement ?</a></h3>
+<p>Le règlement s'applique à un large éventail d'acteurs :<br />
+- Les fournisseurs qui mettent sur le marché des systèmes d'IA dans l'Union européenne.<br />
+- Les déployeurs qui utilisent des systèmes d'IA au sein de l'Union européenne.<br />
+- Les utilisateurs professionnels qui intègrent des outils d'IA dans leur activité.</p>
+<p><strong>Important pour les TPE/PME</strong> : Si vous utilisez des images générées par IA sur votre site web, vos réseaux sociaux ou vos supports de communication, vous pouvez être concerné par les obligations de transparence, notamment celles prévues à l'article 50 du règlement.</p>
+<h3 id="13-quest-ce-quun-systeme-dia-generative"><a class="toclink" href="#13-quest-ce-quun-systeme-dia-generative">1.3. Qu'est-ce qu'un "système d'IA générative" ?</a></h3>
+<p>Un système d'IA générative est un outil capable de créer du contenu (textes, images, vidéos, audio, code) à partir de données d'entraînement. Les outils les plus connus du grand public incluent des générateurs d'images tels que DALL-E, Midjourney, Stable Diffusion, Adobe Firefly ou encore Leonardo.ai.</p>
+<p>Lorsque vous utilisez ces outils pour créer des visuels destinés à votre activité professionnelle, vous entrez dans le champ d'application de certaines obligations de l'AI Act.</p>
+<hr />
+<h2 id="2-comprendre-larticle-50-les-obligations-de-transparence"><a class="toclink" href="#2-comprendre-larticle-50-les-obligations-de-transparence">2. Comprendre l'article 50 : les obligations de transparence</a></h2>
+<h3 id="21-le-principe-general"><a class="toclink" href="#21-le-principe-general">2.1. Le principe général</a></h3>
+<p>L'article 50 du règlement AI Act impose des obligations de transparence spécifiques aux systèmes d'IA qui interagissent avec des personnes physiques. L'objectif est que l'utilisateur final puisse savoir qu'il est en présence d'un contenu généré ou manipulé par l'intelligence artificielle.</p>
+<h3 id="22-le-cas-des-contenus-generes-par-ia"><a class="toclink" href="#22-le-cas-des-contenus-generes-par-ia">2.2. Le cas des contenus générés par IA</a></h3>
+<p>Parmi les obligations figurent des règles spécifiques pour les contenus générés par des systèmes d'IA. Le principe est simple : lorsqu'un contenu (image, vidéo, texte, audio) est créé par une IA, les personnes qui le consultent doivent en être informées de manière claire et compréhensible.</p>
+<h3 id="23-pourquoi-cette-obligation"><a class="toclink" href="#23-pourquoi-cette-obligation">2.3. Pourquoi cette obligation ?</a></h3>
+<p>L'objectif du législateur européen est de lutter contre la désinformation, la manipulation et la tromperie. Une image générée par IA peut être si réaliste qu'elle est indiscernable d'une photographie authentique. Sans transparence, le public peut être amené à croire à tort qu'une image reflète la réalité, alors qu'elle a été entièrement fabriquée par un algorithme.</p>
+<hr />
+<h2 id="3-obligations-cles-pour-les-images-generees-par-ia"><a class="toclink" href="#3-obligations-cles-pour-les-images-generees-par-ia">3. Obligations clés pour les images générées par IA</a></h2>
+<h3 id="31-identifier-les-images-concernees"><a class="toclink" href="#31-identifier-les-images-concernees">3.1. Identifier les images concernées</a></h3>
+<p>Vous devez apporter une information transparente lorsque vous publiez des images générées par un système d'IA dans un contexte professionnel. Cela concerne notamment :<br />
+- Les illustrations de produits sur un site e-commerce.<br />
+- Les visuels promotionnels sur les réseaux sociaux.<br />
+- Les images d'illustration dans un article de blog.<br />
+- Les visuels présentés à un client dans le cadre d'une prestation.<br />
+- Les éléments graphiques d'une identité visuelle.</p>
+<h3 id="32-les-obligations-principales"><a class="toclink" href="#32-les-obligations-principales">3.2. Les obligations principales</a></h3>
+<p><strong>A. Information des utilisateurs</strong></p>
+<p>Lorsqu'une personne consulte une image générée par IA sur votre site ou votre support de communication, elle doit pouvoir en avoir connaissance. Cette information doit être :<br />
+- <strong>Claire</strong> : facilement compréhensible par un public non spécialiste.<br />
+- <strong>Visible</strong> : placée de manière à être remarquée par le visiteur.<br />
+- <strong>Accessible</strong> : formulée dans la langue principale du site ou du support.</p>
+<p><strong>B. Mention de transparence adaptée au contexte</strong></p>
+<p>La forme exacte de la mention dépend du contexte de publication. Il n'existe pas de formulaire unique imposé par le texte, mais le principe est que l'information doit être adaptée au support utilisé.</p>
+<p><strong>C. Traçabilité interne</strong></p>
+<p>Même si le règlement ne prescrit pas de modalités techniques précises pour les TPE/PME, il est recommandé de conserver une trace interne des images générées par IA utilisées dans votre activité. Cette traçabilité peut s'avérer utile en cas de contrôle ou de demande d'information.</p>
+<h3 id="33-quand-lobligation-sapplique-t-elle"><a class="toclink" href="#33-quand-lobligation-sapplique-t-elle">3.3. Quand l'obligation s'applique-t-elle ?</a></h3>
+<p>L'obligation de transparence s'applique lorsque l'image est publiée dans un cadre professionnel ou commercial. Des nuances peuvent exister selon le contexte exact, mais en règle générale :<br />
+- <strong>Site web professionnel</strong> : l'obligation s'applique.<br />
+- <strong>Réseaux sociaux d'entreprise</strong> : l'obligation s'applique.<br />
+- <strong>Supports de communication commerciale</strong> : l'obligation s'applique.<br />
+- <strong>Usage strictement personnel et non commercial</strong> : vous n'êtes généralement pas concerné en tant qu'entreprise.</p>
+<h3 id="34-les-exceptions-et-nuances"><a class="toclink" href="#34-les-exceptions-et-nuances">3.4. Les exceptions et nuances</a></h3>
+<p>Certaines situations peuvent bénéficier d'assouplissements ou nécessiter une analyse au cas par cas :<br />
+- <strong>Contenu manifestement artistique ou créatif</strong> : lorsque le caractère artificiel est évident (style graphique particulier, illustration évidente), l'obligation de mention peut être moins stricte, bien qu'une information reste recommandée.<br />
+- <strong>Images retouchées par IA</strong> : la frontière entre "image générée" et "image retouchée" n'est pas toujours claire. Une image légèrement modifiée par IA (correction de couleurs, suppression d'un élément) peut ne pas être soumise aux mêmes obligations qu'une image entièrement créée par IA. En cas de doute, une mention de transparence reste une bonne pratique.<br />
+- <strong>Images d'archive ou de documentation</strong> : les obligations peuvent varier selon que l'image est utilisée à des fins informatives, commerciales ou promotionnelles.</p>
+<h3 id="35-quelles-sont-les-bonnes-pratiques"><a class="toclink" href="#35-quelles-sont-les-bonnes-pratiques">3.5. Quelles sont les bonnes pratiques ?</a></h3>
+<p>Même au-delà des obligations strictes, plusieurs bonnes pratiques permettent de renforcer la confiance de vos visiteurs et clients :<br />
+- Mentionner systématiquement le caractère généré par IA dès la première publication.<br />
+- Utiliser un badge ou une icône reconnaissable pour signaler les images concernées.<br />
+- Inclure une explication dans vos mentions légales ou conditions d'utilisation.<br />
+- Former les équipes (même réduites) à identifier et marquer les contenus concernés.</p>
+<hr />
+<h2 id="4-exemples-de-mentions-de-transparence-fren"><a class="toclink" href="#4-exemples-de-mentions-de-transparence-fren">4. Exemples de mentions de transparence (FR/EN)</a></h2>
+<h3 id="41-mentions-generales-pour-un-site-web"><a class="toclink" href="#41-mentions-generales-pour-un-site-web">4.1. Mentions générales pour un site web</a></h3>
+<h4 id="francais-version-courte"><a class="toclink" href="#francais-version-courte">Français — Version courte</a></h4>
+<blockquote>
+<p>"Certaines images présentes sur ce site ont été générées à l'aide d'outils d'intelligence artificielle."</p>
+</blockquote>
+<h4 id="francais-version-detaillee"><a class="toclink" href="#francais-version-detaillee">Français — Version détaillée</a></h4>
+<blockquote>
+<p>"Dans le cadre de notre activité, nous utilisons parfois des outils d'intelligence artificielle pour créer ou enrichir certains visuels présentés sur ce site. Les images concernées sont identifiées par une mention spécifique. Cette démarche vise à vous offrir une expérience visuelle de qualité tout en assurant une transparence totale sur l'origine de nos contenus."</p>
+</blockquote>
+<h4 id="anglais-version-courte"><a class="toclink" href="#anglais-version-courte">Anglais — Version courte</a></h4>
+<blockquote>
+<p>"Some images on this website have been generated using artificial intelligence tools."</p>
+</blockquote>
+<h4 id="anglais-version-detaillee"><a class="toclink" href="#anglais-version-detaillee">Anglais — Version détaillée</a></h4>
+<blockquote>
+<p>"As part of our business activities, we may occasionally use artificial intelligence tools to create or enhance certain visuals displayed on this website. Affected images are identified by a specific notice. This approach is intended to provide you with a high-quality visual experience while ensuring full transparency regarding the origin of our content."</p>
+</blockquote>
+<h3 id="42-mentions-pour-les-reseaux-sociaux"><a class="toclink" href="#42-mentions-pour-les-reseaux-sociaux">4.2. Mentions pour les réseaux sociaux</a></h3>
+<h4 id="francais-legende-de-publication"><a class="toclink" href="#francais-legende-de-publication">Français — Légende de publication</a></h4>
+<blockquote>
+<p>"Visuel généré par IA — [Nom de l'outil utilisé, si pertinent]"</p>
+</blockquote>
+<h4 id="anglais-legende-de-publication"><a class="toclink" href="#anglais-legende-de-publication">Anglais — Légende de publication</a></h4>
+<blockquote>
+<p>"AI-generated visual — [Tool name, if relevant]"</p>
+</blockquote>
+<h3 id="43-mentions-pour-un-e-commerce"><a class="toclink" href="#43-mentions-pour-un-e-commerce">4.3. Mentions pour un e-commerce</a></h3>
+<h4 id="francais-fiche-produit"><a class="toclink" href="#francais-fiche-produit">Français — Fiche produit</a></h4>
+<blockquote>
+<p>"Image de présentation générée par intelligence artificielle. Le produit physique peut présenter de légères variations par rapport au visuel."</p>
+</blockquote>
+<h4 id="anglais-fiche-produit"><a class="toclink" href="#anglais-fiche-produit">Anglais — Fiche produit</a></h4>
+<blockquote>
+<p>"Presentation image generated by artificial intelligence. The physical product may differ slightly from the visual."</p>
+</blockquote>
+<h3 id="44-mentions-pour-un-blog-ou-media-en-ligne"><a class="toclink" href="#44-mentions-pour-un-blog-ou-media-en-ligne">4.4. Mentions pour un blog ou média en ligne</a></h3>
+<h4 id="francais-legende-dimage"><a class="toclink" href="#francais-legende-dimage">Français — Légende d'image</a></h4>
+<blockquote>
+<p>"Illustration générée par IA."</p>
+</blockquote>
+<h4 id="anglais-legende-dimage"><a class="toclink" href="#anglais-legende-dimage">Anglais — Légende d'image</a></h4>
+<blockquote>
+<p>"AI-generated illustration."</p>
+</blockquote>
+<h3 id="45-mentions-pour-une-agence-ou-prestataire"><a class="toclink" href="#45-mentions-pour-une-agence-ou-prestataire">4.5. Mentions pour une agence ou prestataire</a></h3>
+<h4 id="francais-page-de-presentation-de-portfolio"><a class="toclink" href="#francais-page-de-presentation-de-portfolio">Français — Page de présentation de portfolio</a></h4>
+<blockquote>
+<p>"Les visuels présentés dans cette section ont été créés avec l'aide d'outils d'intelligence artificielle. Ils illustrent notre capacité à exploiter ces technologies dans le cadre de prestations sur mesure."</p>
+</blockquote>
+<h4 id="anglais-page-de-portfolio"><a class="toclink" href="#anglais-page-de-portfolio">Anglais — Page de portfolio</a></h4>
+<blockquote>
+<p>"The visuals presented in this section were created with the assistance of artificial intelligence tools. They illustrate our ability to leverage these technologies as part of bespoke services."</p>
+</blockquote>
+<h3 id="46-mentions-pour-un-pied-de-page-ou-page-dediee"><a class="toclink" href="#46-mentions-pour-un-pied-de-page-ou-page-dediee">4.6. Mentions pour un pied de page ou page dédiée</a></h3>
+<h4 id="francais"><a class="toclink" href="#francais">Français</a></h4>
+<blockquote>
+<p>"Transparence IA : Ce site utilise des images générées par intelligence artificielle. En savoir plus [lien vers une page dédiée]."</p>
+</blockquote>
+<h4 id="anglais"><a class="toclink" href="#anglais">Anglais</a></h4>
+<blockquote>
+<p>"AI Transparency: This website uses images generated by artificial intelligence. Learn more [link to dedicated page]."</p>
+</blockquote>
+<h3 id="47-exemple-de-page-dediee-texte-type"><a class="toclink" href="#47-exemple-de-page-dediee-texte-type">4.7. Exemple de page dédiée (texte type)</a></h3>
+<h4 id="francais_1"><a class="toclink" href="#francais_1">Français</a></h4>
+<blockquote>
+<p>"Notre engagement pour une IA transparente<br />
+Dans le cadre de notre activité, nous utilisons des outils d'intelligence artificielle pour créer certains visuels présents sur ce site. Cette pratique nous permet d'offrir des contenus variés et de qualité tout en optimisant nos ressources.<br />
+Conformément aux exigences de transparence du règlement européen sur l'intelligence artificielle (AI Act), nous nous engageons à identifier clairement les images concernées. Vous trouverez sur chaque page la mention appropriée lorsqu'un visuel a été généré par IA.<br />
+Si vous avez des questions sur notre utilisation de ces technologies, vous pouvez nous contacter à [adresse e-mail]."</p>
+</blockquote>
+<h4 id="anglais_1"><a class="toclink" href="#anglais_1">Anglais</a></h4>
+<blockquote>
+<p>"Our Commitment to Transparent AI<br />
+In the course of our business, we use artificial intelligence tools to create some of the visuals displayed on this website. This practice allows us to offer varied, high-quality content while optimizing our resources.<br />
+In accordance with the transparency requirements of the European Artificial Intelligence Act (AI Act), we are committed to clearly identifying affected images. You will find the appropriate notice on each page when a visual has been AI-generated.<br />
+If you have any questions about our use of these technologies, please contact us at [email address]."</p>
+</blockquote>
+<hr />
+<h2 id="5-checklist-de-conformite-par-type-de-site"><a class="toclink" href="#5-checklist-de-conformite-par-type-de-site">5. Checklist de conformité par type de site</a></h2>
+<h3 id="51-site-e-commerce"><a class="toclink" href="#51-site-e-commerce">5.1. Site e-commerce</a></h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Inventorier toutes les images générées par IA utilisées sur le site (fiches produit, bannières, catégories).</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ajouter une mention de transparence sur chaque fiche produit comportant une image générée par IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Préciser si le produit physique peut différer du visuel (gestion des attentes).</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Ajouter une mention générale dans les conditions générales de vente ou une page dédiée.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Vérifier que les mentions sont visibles sur mobile et desktop.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>6</td>
+<td>S'assurer que les mentions sont présentes dans la langue du site.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Former l'équipe (ou la personne en charge) à identifier les nouvelles images générées par IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Planifier une revue trimestrielle des images et de leurs mentions.</td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-blog-ou-media-en-ligne"><a class="toclink" href="#52-blog-ou-media-en-ligne">5.2. Blog ou média en ligne</a></h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Identifier tous les articles contenant des images générées par IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ajouter une légende "Illustration générée par IA" sous chaque image concernée.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Vérifier que la mention apparaît dans les flux RSS et les aperçus de partage social (Open Graph).</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Créer une page de politique éditoriale mentionnant l'utilisation d'images IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>S'assurer que les images utilisées à des fins d'information (actualités, reportages) respectent des critères éditoriaux stricts.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Mettre en place un processus de validation avant publication d'une image IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Prévoir une mention dans la newsletter si celle-ci contient des images générées par IA.</td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-site-dagence-ou-freelance"><a class="toclink" href="#53-site-dagence-ou-freelance">5.3. Site d'agence ou freelance</a></h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Identifier les visuels du portfolio créés avec l'aide de l'IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ajouter une mention sur chaque projet ou visuel concerné.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Expliciter dans la présentation de l'agence que l'IA est utilisée comme un outil créatif.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Préparer une réponse type aux clients qui posent des questions sur l'utilisation de l'IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Vérifier que les contrats ou devis mentionnent, si nécessaire, l'utilisation d'outils d'IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Créer une page "Méthodologie" ou "Outils" qui mentionne l'IA de manière transparente.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>7</td>
+<td>S'assurer que les images présentées comme des "réalisations client" reflètent fidèlement le travail livré.</td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-site-institutionnel-ou-corporate"><a class="toclink" href="#54-site-institutionnel-ou-corporate">5.4. Site institutionnel ou corporate</a></h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Réaliser un audit des visuels présents sur le site (photos d'équipe, illustrations, bannières).</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Marquer les images générées par IA d'une mention visible.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Inclure une section "Transparence IA" dans le rapport de durabilité ou la section RSE, si applicable.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Vérifier que les images utilisées dans les communications internes respectent également les règles de transparence.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>S'assurer que les partenaires ou fournisseurs de contenus visuels fournissent l'origine IA ou non de leurs livrables.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Prévoir une formation courte pour les équipes marketing et communication.</td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="55-reseaux-sociaux-tous-types"><a class="toclink" href="#55-reseaux-sociaux-tous-types">5.5. Réseaux sociaux (tous types)</a></h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Ajouter une mention dans la légende de chaque publication contenant une image générée par IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Utiliser un hashtag dédié (ex: #AIGenerated, #ImageIA) en complément de la mention textuelle.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Si la plateforme le permet, utiliser les fonctionnalités de marquage intégrées pour le contenu IA.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Vérifier que les stories et contenus éphémères comportent aussi la mention si nécessaire.</td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Prévoir un template de légende incluant la mention de transparence pour gagner du temps.</td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-faq"><a class="toclink" href="#6-faq">6. FAQ</a></h2>
+<h3 id="61-suis-je-oblige-de-mentionner-que-mes-images-sont-generees-par-ia"><a class="toclink" href="#61-suis-je-oblige-de-mentionner-que-mes-images-sont-generees-par-ia">6.1. Suis-je obligé de mentionner que mes images sont générées par IA ?</a></h3>
+<p>Si vous utilisez des images générées par intelligence artificielle dans un contexte professionnel ou commercial au sein de l'Union européenne, vous êtes probablement concerné par l'obligation de transparence de l'article 50 du AI Act. L'objectif est d'informer les utilisateurs de manière claire sur le caractère artificiel du contenu. En cas de doute sur l'applicabilité exacte à votre situation, il est recommandé de consulter un professionnel du droit.</p>
+<h3 id="62-que-se-passe-t-il-si-je-ne-mets-pas-de-mention"><a class="toclink" href="#62-que-se-passe-t-il-si-je-ne-mets-pas-de-mention">6.2. Que se passe-t-il si je ne mets pas de mention ?</a></h3>
+<p>Le non-respect des obligations de transparence peut entraîner des sanctions. Le règlement prévoit un cadre de sanctions administratives, dont les modalités exactes peuvent dépendre des textes d'application nationaux et de la nature de l'infraction. Pour connaître les risques précis applicables à votre situation, une consultation juridique est recommandée. En attendant, la mise en place d'une mention de transparence est une mesure de prudence.</p>
+<h3 id="63-dois-je-mentionner-le-nom-de-loutil-utilise-midjourney-dall-e-etc"><a class="toclink" href="#63-dois-je-mentionner-le-nom-de-loutil-utilise-midjourney-dall-e-etc">6.3. Dois-je mentionner le nom de l'outil utilisé (Midjourney, DALL-E, etc.) ?</a></h3>
+<p>Le règlement ne prescrit pas explicitement de mentionner le nom de l'outil utilisé. L'obligation porte sur l'information quant au caractère généré par IA du contenu. Cependant, mentionner le nom de l'outil peut être une bonne pratique de transparence renforcée et rassurer vos visiteurs.</p>
+<h3 id="64-les-images-retouchees-par-ia-sont-elles-concernees"><a class="toclink" href="#64-les-images-retouchees-par-ia-sont-elles-concernees">6.4. Les images retouchées par IA sont-elles concernées ?</a></h3>
+<p>La frontière entre "image générée" et "image retouchée" par IA n'est pas toujours clairement définie dans les textes. Une image entièrement créée par IA est clairement concernée. Pour une image photographique sur laquelle des corrections mineures ont été apportées par IA (ajustement des couleurs, suppression d'un détail), l'obligation peut être moins stricte. En cas de doute, une mention de transparence reste recommandée comme mesure de précaution.</p>
+<h3 id="65-dois-je-mettre-une-mention-sur-chaque-image-ou-une-mention-generale-suffit-elle"><a class="toclink" href="#65-dois-je-mettre-une-mention-sur-chaque-image-ou-une-mention-generale-suffit-elle">6.5. Dois-je mettre une mention sur chaque image ou une mention générale suffit-elle ?</a></h3>
+<p>La meilleure pratique consiste à associer les deux niveaux d'information :<br />
+- Une <strong>mention spécifique</strong> au niveau de chaque image concernée (légende, badge, texte alternatif).<br />
+- Une <strong>mention générale</strong> dans une page dédiée (mentions légales, politique de contenu, page "Transparence IA").</p>
+<p>Cette double approche garantit que l'information est accessible quel que soit le parcours de l'utilisateur sur votre site.</p>
+<h3 id="66-le-badge-de-transparence-est-il-suffisant"><a class="toclink" href="#66-le-badge-de-transparence-est-il-suffisant">6.6. Le badge de transparence est-il suffisant ?</a></h3>
+<p>Un badge ou une icône peut être un excellent moyen de signaler visuellement qu'une image est générée par IA, mais il doit être accompagné d'une information textuelle pour être pleinement accessible. De plus, le badge seul peut ne pas être compris de tous les visiteurs. Une combinaison badge + mention textuelle offre le meilleur niveau de conformité et d'accessibilité.</p>
+<h3 id="67-mes-clients-peuvent-ils-refuser-que-jutilise-des-images-generees-par-ia"><a class="toclink" href="#67-mes-clients-peuvent-ils-refuser-que-jutilise-des-images-generees-par-ia">6.7. Mes clients peuvent-ils refuser que j'utilise des images générées par IA ?</a></h3>
+<p>Oui, un client peut exprimer des exigences spécifiques concernant l'utilisation ou non de contenus générés par IA. Il est recommandé de discuter de cette question dès la phase de contractualisation et, le cas échéant, de préciser dans le devis ou le contrat si des outils d'IA seront utilisés pour créer les livrables. La transparence envers vos clients est un atout de confiance.</p>
+<h3 id="68-que-faire-si-jai-publie-des-images-ia-avant-de-connaitre-cette-obligation"><a class="toclink" href="#68-que-faire-si-jai-publie-des-images-ia-avant-de-connaitre-cette-obligation">6.8. Que faire si j'ai publié des images IA avant de connaître cette obligation ?</a></h3>
+<p>La démarche la plus sage consiste à :<br />
+1. Identifier les images concernées sur votre site ou vos réseaux sociaux.<br />
+2. Ajouter rétroactivement les mentions de transparence manquantes.<br />
+3. Mettre en place un processus pour les futures publications afin d'éviter d'avoir à corriger à posteriori.</p>
+<p>Cette démarche proactive démontre votre engagement envers la transparence.</p>
+<h3 id="69-lobligation-sapplique-t-elle-aux-images-generees-par-ia-pour-un-usage-strictement-interne"><a class="toclink" href="#69-lobligation-sapplique-t-elle-aux-images-generees-par-ia-pour-un-usage-strictement-interne">6.9. L'obligation s'applique-t-elle aux images générées par IA pour un usage strictement interne ?</a></h3>
+<p>Les obligations de transparence de l'article 50 visent principalement les contenus destinés à interagir avec le public ou des tiers. Si les images sont utilisées exclusivement dans un cadre interne (présentations internes, documentation interne) et ne sont pas diffusées à des personnes extérieures, l'obligation de transparence publique ne s'applique généralement pas. Toutefois, une politique interne claire sur l'utilisation de l'IA reste une bonne pratique.</p>
+<h3 id="610-ou-puis-je-trouver-le-texte-officiel-du-ai-act"><a class="toclink" href="#610-ou-puis-je-trouver-le-texte-officiel-du-ai-act">6.10. Où puis-je trouver le texte officiel du AI Act ?</a></h3>
+<p>Le texte officiel du règlement est publié au Journal officiel de l'Union européenne et disponible sur le site EUR-Lex (eur-lex.europa.eu). Il est conseillé de vous référer au texte original pour toute question d'interprétation juridique précise, et de consulter un avocat ou juriste spécialisé en droit du numérique pour une analyse adaptée à votre situation.</p>
+<hr />
+<h2 id="7-ressources-utiles-et-prochaines-etapes"><a class="toclink" href="#7-ressources-utiles-et-prochaines-etapes">7. Ressources utiles et prochaines étapes</a></h2>
+<h3 id="71-ressources-officielles"><a class="toclink" href="#71-ressources-officielles">7.1. Ressources officielles</a></h3>
+<ul>
+<li><strong>Texte du règlement AI Act</strong> : disponible sur EUR-Lex (eur-lex.europa.eu).</li>
+<li><strong>Site de la Commission européenne sur l'IA</strong> : informations et guides explicatifs sur le cadre réglementaire européen.</li>
+<li><strong>Autorités nationales de régulation</strong> : dans chaque État membre, une autorité sera désignée pour superviser l'application du règlement.</li>
+</ul>
+<h3 id="72-outils-recommandes"><a class="toclink" href="#72-outils-recommandes">7.2. Outils recommandés</a></h3>
+<ul>
+<li><strong>Générateurs d'images IA</strong> : DALL-E, Midjourney, Stable Diffusion, Adobe Firefly, Leonardo.ai (veillez à respecter les conditions d'utilisation de chaque outil).</li>
+<li><strong>Solutions de badge de transparence</strong> : BadgeIA et autres solutions permettant d'intégrer facilement un badge de conformité sur votre site.</li>
+<li><strong>Outils de gestion de contenu (CMS)</strong> : la plupart des CMS modernes (WordPress, Shopify, Webflow) permettent d'ajouter facilement des légendes, des pages dédiées ou des badges personnalisés.</li>
+</ul>
+<h3 id="73-prochaines-etapes-concretes"><a class="toclink" href="#73-prochaines-etapes-concretes">7.3. Prochaines étapes concrètes</a></h3>
+<ol>
+<li><strong>Faites l'inventaire</strong> de toutes les images générées par IA présentes sur vos supports de communication.</li>
+<li><strong>Choisissez votre format de mention</strong> (légende, badge, page dédiée) en fonction de votre type de site.</li>
+<li><strong>Rédigez ou adaptez</strong> les mentions de transparence à l'aide des exemples fournis dans ce guide.</li>
+<li><strong>Mettez à jour votre site</strong> en ajoutant les mentions manquantes.</li>
+<li><strong>Documentez votre démarche</strong> en interne pour les futures publications.</li>
+<li><strong>Envisagez une consultation juridique</strong> si votre activité repose fortement sur des contenus générés par IA ou si vous avez un doute sur l'applicabilité du règlement à votre cas spécifique.</li>
+</ol>
+<hr />
+<div class="disclaimer"><h2 id="8-disclaimer-juridique"><a class="toclink" href="#8-disclaimer-juridique">8. Disclaimer juridique</a></h2>
+<p><strong>IMPORTANT — À LIRE ATTENTIVEMENT</strong></p>
+<p>Ce guide a été rédigé à titre informatif et pédagogique à destination des TPE/PME souhaitant mieux comprendre les enjeux de l'AI Act, notamment en ce qui concerne l'article 50 relatif à la transparence des contenus générés par intelligence artificielle.</p>
+<p><strong>Ce document ne constitue pas un avis juridique.</strong> Il ne remplace en aucun cas la consultation d'un avocat, d'un juriste ou de tout autre professionnel du droit qualifié, compétent en droit du numérique et en droit européen. Les informations contenues dans ce guide sont fournies à titre indicatif et ne prétendent pas à l'exhaustivité.</p>
+<p>Le règlement AI Act est un texte juridique complexe dont l'interprétation peut évoluer au fil des lignes directrices, des décisions de justice et des textes d'application nationaux. Les obligations exactes applicables à votre situation dépendent de multiples facteurs (nature de votre activité, localisation, type de contenu, usage commercial ou non, etc.) qui ne peuvent être couverts de manière exhaustive dans un guide généraliste.</p>
+<p><strong>En conséquence :</strong><br />
+- L'auteur et l'éditeur de ce guide déclinent toute responsabilité quant aux décisions prises sur la base de ce document.<br />
+- Il est vivement recommandé de faire appel à un conseil juridique professionnel pour toute question relative à la conformité de votre activité au AI Act.<br />
+- Ce guide ne préjuge pas de l'interprétation que les autorités de régulation ou les juridictions pourraient retenir.</p>
+<p><strong>Mise à jour</strong> : Ce guide reflète la compréhension du règlement AI Act à la date de sa rédaction. Il peut nécessiter des mises à jour pour tenir compte des évolutions législatives et réglementaires futures.</p>
+</div>
+<hr />
+<p><em>Fin du guide</em></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Guide proposé par <a href="/">BadgeIA</a> · <a href="/mentions-legales.html">Mentions légales</a></p>
+    <p>Hébergé en UE · Zéro cookie · Zéro tracking</p>
+  </footer>
+</body>
+</html>
