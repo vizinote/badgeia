@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Étiqueteur d'images IA – BadgeIA</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    header p {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    main {
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 0.75rem;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      color: var(--muted);
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: #eff6ff;
+      color: var(--text);
+    }
+    .dropzone strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    input[type="file"] { display: none; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    label { font-size: 0.9rem; color: var(--muted); }
+    input[type="range"] { flex: 1; min-width: 120px; }
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--accent-dark); }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover { background: var(--bg); }
+    .preview-wrap {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .preview-wrap img, .preview-wrap canvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      background: repeating-conic-gradient(#f1f5f9 0 25%, #ffffff 0 50%) 50% / 20px 20px;
+    }
+    .notice {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #1e3a8a;
+    }
+    .notice strong { display: block; margin-bottom: 0.25rem; }
+    .error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem 1rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.25rem; }
+      .card { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>🎨 Étiqueteur d'images IA</h1>
+      <p>Ajoutez gratuitement la mention "Image générée par IA" à vos visuels, directement dans votre navigateur.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <div class="notice">
+        <strong>Confidentialité totale</strong>
+        Aucune image n'est envoyée sur un serveur. Le traitement se fait entièrement dans votre navigateur.
+      </div>
+
+      <label for="fileInput" class="dropzone" id="dropzone">
+        <strong>Cliquez pour choisir une image</strong>
+        ou glissez-déposez ici (JPG, PNG, WebP, GIF, BMP)
+        <input type="file" id="fileInput" accept="image/*">
+      </label>
+
+      <div id="errorBox" class="error"></div>
+
+      <div class="controls" id="controls" style="display:none;">
+        <label for="opacity">Opacité du filigrane :</label>
+        <input type="range" id="opacity" min="0.3" max="1" step="0.05" value="0.75">
+        <span id="opacityValue">75%</span>
+      </div>
+
+      <div class="actions" id="actions" style="display:none;">
+        <button id="downloadBtn" disabled>Télécharger le résultat (PNG)</button>
+        <button id="resetBtn" class="secondary">Choisir une autre image</button>
+      </div>
+
+      <div class="preview-wrap" id="previewWrap" style="display:none;">
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>À quoi sert cet outil ?</h2>
+      <p>Le règlement européen sur l'IA (AI Act) impose de rendre identifiables les images générées par intelligence artificielle. Cet outil vous permet d'ajouter rapidement une mention claire et discrète sur vos visuels, sans inscription et sans dépendre d'un service en ligne.</p>
+      <p style="margin-bottom:0;"><strong>Conseil d'utilisation :</strong> placez la mention de manière visible sans masquer le sujet principal de l'image. Un bon équilibre : opacité autour de 70-80%, en bas du visuel.</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      Outil proposé par <a href="/">BadgeIA</a> · <a href="/mentions-legales.html">Mentions légales</a>
+    </div>
+  </footer>
+
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const previewWrap = document.getElementById('previewWrap');
+    const controls = document.getElementById('controls');
+    const actions = document.getElementById('actions');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const opacityInput = document.getElementById('opacity');
+    const opacityValue = document.getElementById('opacityValue');
+    const errorBox = document.getElementById('errorBox');
+
+    const MAX_SIZE = 2000;
+    const LABEL = 'Image générée par IA';
+
+    let originalImage = null;
+    let fileName = 'image.png';
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    opacityInput.addEventListener('input', () => {
+      opacityValue.textContent = Math.round(opacityInput.value * 100) + '%';
+      if (originalImage) render();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      originalImage = null;
+      previewWrap.style.display = 'none';
+      controls.style.display = 'none';
+      actions.style.display = 'none';
+      downloadBtn.disabled = true;
+      hideError();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      const baseName = fileName.replace(/\.[^.]+$/, '') || 'image';
+      link.download = baseName + '-etiquette-ia.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    }
+
+    function hideError() {
+      errorBox.style.display = 'none';
+      errorBox.textContent = '';
+    }
+
+    function handleFiles(files) {
+      hideError();
+      if (!files || files.length === 0) return;
+      const file = files[0];
+      if (!file.type.startsWith('image/')) {
+        showError('Le fichier sélectionné n\'est pas une image.');
+        return;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        showError('L\'image est trop lourde (limite : 50 Mo).');
+        return;
+      }
+      fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          originalImage = img;
+          render();
+          previewWrap.style.display = 'block';
+          controls.style.display = 'flex';
+          actions.style.display = 'flex';
+          downloadBtn.disabled = false;
+        };
+        img.onerror = () => showError('Impossible de charger cette image. Vérifiez le format.');
+        img.src = event.target.result;
+      };
+      reader.onerror = () => showError('Erreur de lecture du fichier.');
+      reader.readAsDataURL(file);
+    }
+
+    function render() {
+      if (!originalImage) return;
+
+      let width = originalImage.naturalWidth;
+      let height = originalImage.naturalHeight;
+
+      if (width > MAX_SIZE || height > MAX_SIZE) {
+        const ratio = Math.min(MAX_SIZE / width, MAX_SIZE / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      // Évite les dimensions nulles ou invalides
+      width = Math.max(1, width);
+      height = Math.max(1, height);
+
+      canvas.width = width;
+      canvas.height = height;
+
+      // Remplit le fond en blanc (utile pour les images avec transparence)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      // Dessine l'image redimensionnée
+      ctx.drawImage(originalImage, 0, 0, width, height);
+
+      const opacity = parseFloat(opacityInput.value);
+      const padding = Math.max(12, Math.round(height * 0.02));
+      const fontSize = Math.max(14, Math.round(height * 0.035));
+
+      ctx.font = `600 ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
+      const textMetrics = ctx.measureText(LABEL);
+      const textWidth = textMetrics.width;
+      const textHeight = fontSize;
+      const boxPaddingX = Math.round(fontSize * 0.7);
+      const boxPaddingY = Math.round(fontSize * 0.4);
+      const boxWidth = textWidth + boxPaddingX * 2;
+      const boxHeight = textHeight + boxPaddingY * 2;
+      const x = (width - boxWidth) / 2;
+      const y = height - boxHeight - padding;
+
+      // Fond contrasté
+      ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+      roundRect(ctx, x, y, boxWidth, boxHeight, Math.round(fontSize * 0.25));
+      ctx.fill();
+
+      // Texte semi-transparent
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.fillText(LABEL, x + boxPaddingX, y + boxHeight / 2);
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      r = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+  </script>
+</body>
+</html>
