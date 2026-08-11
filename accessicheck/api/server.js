@@ -7,6 +7,8 @@ app.use(express.json({ limit: '1mb' }));
 
 const PORT = process.env.PORT || 8080;
 const BASE_PATH = process.env.BASE_PATH || '';
+const WORKER_SCAN_TIMEOUT_MS = parseInt(process.env.WORKER_SCAN_TIMEOUT_MS || '120000', 10);
+const VALID_OFFERS = new Set(['oneshot', 'pro', 'monitoring']);
 const ALLOWED_ORIGINS = new Set([
   'https://accessicheck.brozapi.com',
   'https://badgeia.brozapi.com',
@@ -77,7 +79,13 @@ app.post(route('/scan'), async (req, res) => {
   }
 
   const url = normalizeUrl(req.body.url);
-  const offer = ['oneshot', 'pro', 'monitoring'].includes(req.body.offer) ? req.body.offer : 'oneshot';
+  const rawOffer = req.body.offer;
+
+  if (!rawOffer || !VALID_OFFERS.has(rawOffer)) {
+    return makeResponse(res, { ok: false, error: `Offre invalide. Valeurs acceptées : ${Array.from(VALID_OFFERS).join(', ')}.` }, 400);
+  }
+
+  const offer = rawOffer;
 
   const error = validateUrl(url);
   if (error) {
@@ -162,15 +170,36 @@ app.use((req, res) => {
 // Worker asynchrone de scans --------------------------------------------------
 let workerRunning = true;
 
+function withTimeout(promise, ms, label) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Timeout du worker (${label} > ${ms}ms)`));
+    }, ms);
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
 async function processOneScan(scan) {
   const id = scan.id;
   console.log(`[worker] démarrage scan ${id} : ${scan.url}`);
   await updateScanStatus(id, 'running', { started_at: new Date().toISOString() });
 
   try {
-    const result = await scanWithRetry(scan.url, (level, ...args) => {
-      console.log(`[worker ${id}]`, level, ...args);
-    });
+    const result = await withTimeout(
+      scanWithRetry(scan.url, (level, ...args) => {
+        console.log(`[worker ${id}]`, level, ...args);
+      }),
+      WORKER_SCAN_TIMEOUT_MS,
+      `scan ${id}`
+    );
     await updateScanStatus(id, 'done', {
       finished_at: new Date().toISOString(),
       result: JSON.stringify(result),
