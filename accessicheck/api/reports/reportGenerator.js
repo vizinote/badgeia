@@ -13,7 +13,15 @@ async function generateReportHtml(scan) {
   if (!renderer) {
     throw new Error(`Offre de rapport inconnue : ${offer}`);
   }
-  return renderer(scan);
+  const normalized = { ...scan };
+  if (typeof normalized.result === 'string') {
+    try {
+      normalized.result = JSON.parse(normalized.result);
+    } catch (err) {
+      throw new Error('Résultat de scan invalide (JSON cassé).');
+    }
+  }
+  return renderer(normalized);
 }
 
 async function generateReportPdf(scan) {

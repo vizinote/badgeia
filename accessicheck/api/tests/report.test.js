@@ -44,6 +44,13 @@ describe('report generator', () => {
     assert(html.includes('Plan de remédiation'));
   });
 
+  it('parses string result from DB', async () => {
+    const scan = makeScan('oneshot');
+    scan.result = JSON.stringify(scan.result);
+    const html = await generateReportHtml(scan);
+    assert(html.includes('65<small>/100</small>'));
+  });
+
   it('renders monitoring HTML', async () => {
     const html = await generateReportHtml(makeScan('monitoring'));
     assert(html.includes('Synthèse mensuelle'));
