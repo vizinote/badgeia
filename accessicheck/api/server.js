@@ -194,9 +194,7 @@ async function processOneScan(scan) {
 
   try {
     const result = await withTimeout(
-      scanWithRetry(scan.url, (level, ...args) => {
-        console.log(`[worker ${id}]`, level, ...args);
-      }),
+      scanWithRetry(scan.url),
       WORKER_SCAN_TIMEOUT_MS,
       `scan ${id}`
     );
@@ -206,10 +204,11 @@ async function processOneScan(scan) {
     });
     console.log(`[worker] scan ${id} terminé : score ${result.score}`);
   } catch (err) {
-    console.error(`[worker] scan ${id} échoué :`, err.message);
+    const message = err && err.message ? err.message : 'Erreur inconnue.';
+    console.error(`[worker] scan ${id} échoué :`, message);
     await updateScanStatus(id, 'failed', {
       finished_at: new Date().toISOString(),
-      error: err.message || 'Erreur inconnue.',
+      error: message,
     });
   }
 }
