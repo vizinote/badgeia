@@ -521,7 +521,9 @@ def stats():
             cursor = conn.execute(query, params)
             for product, event, day, count in cursor.fetchall():
                 totals_by_event[event] = totals_by_event.get(event, 0) + count
-                by_day.setdefault(day, {})[event] = by_day[day].get(event, 0) + count
+
+                day_block = by_day.setdefault(day, {})
+                day_block[event] = day_block.get(event, 0) + count
 
                 product_block = by_product.setdefault(
                     product, {"totals_by_event": {}, "by_day": {}}
@@ -529,9 +531,8 @@ def stats():
                 product_block["totals_by_event"][event] = (
                     product_block["totals_by_event"].get(event, 0) + count
                 )
-                product_block["by_day"].setdefault(day, {})[event] = (
-                    product_block["by_day"][day].get(event, 0) + count
-                )
+                product_day_block = product_block["by_day"].setdefault(day, {})
+                product_day_block[event] = product_day_block.get(event, 0) + count
     except sqlite3.Error:
         pass
 
