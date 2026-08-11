@@ -28,10 +28,14 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 ALLOWED_ORIGINS = {
     "https://badgeia.brozapi.com",
+    "https://accessicheck.brozapi.com",
     "https://brozapi.com",
     "https://www.brozapi.com",
     "http://localhost",
 }
+
+# Produits supportés par les métriques anonymes.
+PRODUCTS = {"badgeia", "accessicheck"}
 MAX_BODY_SIZE = 2 * 1024 * 1024  # 2 Mo
 SCAN_TIMEOUT = 10
 USER_AGENT = "BadgeIA-Scanner/0.1 (+https://badgeia.brozapi.com)"
@@ -103,33 +107,63 @@ def init_db() -> None:
 def init_metrics_db() -> None:
     os.makedirs(os.path.dirname(METRICS_DATABASE_PATH), exist_ok=True)
     with sqlite3.connect(METRICS_DATABASE_PATH) as conn:
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS events (
-                event TEXT NOT NULL,
-                path TEXT NOT NULL,
-                day TEXT NOT NULL,
-                count INTEGER NOT NULL DEFAULT 0,
-                PRIMARY KEY (event, path, day)
+        v2_exists = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='events_v2'"
+        ).fetchone()
+        old_exists = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='events'"
+        ).fetchone()
+        if not v2_exists and old_exists:
+            # Migration : la v1 n'avait pas de colonne produit.
+            conn.execute("ALTER TABLE events RENAME TO events_legacy")
+            conn.execute(
+                """
+                CREATE TABLE events_v2 (
+                    product TEXT NOT NULL DEFAULT 'badgeia',
+                    event TEXT NOT NULL,
+                    path TEXT NOT NULL,
+                    day TEXT NOT NULL,
+                    count INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY (product, event, path, day)
+                )
+                """
             )
-            """
-        )
+            conn.execute(
+                """
+                INSERT INTO events_v2 (product, event, path, day, count)
+                SELECT 'badgeia', event, path, day, count FROM events_legacy
+                """
+            )
+        else:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS events_v2 (
+                    product TEXT NOT NULL DEFAULT 'badgeia',
+                    event TEXT NOT NULL,
+                    path TEXT NOT NULL,
+                    day TEXT NOT NULL,
+                    count INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY (product, event, path, day)
+                )
+                """
+            )
 
 
-def track_event(event: str, path: str) -> None:
-    """Incrémente un compteur agrégé par événement, chemin et jour. Aucune donnée personnelle."""
-    if not event or not path:
+def track_event(event: str, path: str, product: str = "badgeia") -> None:
+    """Incrémente un compteur agrégé par produit, événement, chemin et jour. Aucune donnée personnelle."""
+    product = (product or "badgeia").lower()
+    if product not in PRODUCTS or not event or not path:
         return
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     try:
         with sqlite3.connect(METRICS_DATABASE_PATH) as conn:
             conn.execute(
                 """
-                INSERT INTO events (event, path, day, count)
-                VALUES (?, ?, ?, 1)
-                ON CONFLICT(event, path, day) DO UPDATE SET count = count + 1
+                INSERT INTO events_v2 (product, event, path, day, count)
+                VALUES (?, ?, ?, ?, 1)
+                ON CONFLICT(product, event, path, day) DO UPDATE SET count = count + 1
                 """,
-                (event, path, day),
+                (product, event, path, day),
             )
     except sqlite3.Error:
         pass  # les stats ne doivent jamais casser l'application
@@ -338,7 +372,7 @@ def scan():
     try:
         scanned_domain = urlparse(url).hostname or url
         save_scan(scanned_domain, verdict, len(systems))
-        track_event("scan", scanned_domain)
+        track_event("scan", scanned_domain, product="badgeia")
     except sqlite3.Error:
         pass  # les stats ne doivent jamais casser un scan
 
@@ -430,7 +464,17 @@ def health():
     return jsonify({"ok": True})
 
 
-ALLOWED_EVENTS = {"pageview", "scan", "click_buy_kit", "click_buy_suivi"}
+ALLOWED_EVENTS = {
+    "pageview",
+    "scan",
+    "click_buy_kit",
+    "click_buy_suivi",
+    "click_buy_oneshot",
+    "click_buy_pro",
+    "click_buy_monitoring",
+    "scan_triggered",
+    "payment_confirmed",
+}
 
 
 @app.route("/track", methods=["POST", "OPTIONS"])
@@ -442,40 +486,66 @@ def track():
     data = request.get_json(silent=True) or {}
     event = (data.get("event") or "").strip().lower()
     path = (data.get("path") or "").strip()
+    product = (data.get("product") or "badgeia").strip().lower()
 
+    if product not in PRODUCTS:
+        return "", 400
     if event not in ALLOWED_EVENTS:
         return "", 400
     if not path or len(path) > 2048:
         return "", 400
 
-    track_event(event, path)
+    track_event(event, path, product=product)
     return "", 204
 
 
 @app.route("/stats", methods=["GET"])
 def stats():
-    """Retourne les compteurs agrégés des 90 derniers jours. Données publiques et anonymes."""
+    """Retourne les compteurs agrégés des 90 derniers jours, filtrables par produit. Données publiques et anonymes."""
     cutoff = (datetime.now(timezone.utc) - timedelta(days=90)).strftime("%Y-%m-%d")
+    product_filter = (request.args.get("product") or "").strip().lower()
+
+    query = "SELECT product, event, day, SUM(count) FROM events_v2 WHERE day >= ?"
+    params: list[Any] = [cutoff]
+    if product_filter in PRODUCTS:
+        query += " AND product = ?"
+        params.append(product_filter)
+    query += " GROUP BY product, event, day"
+
     totals_by_event: dict[str, int] = {}
     by_day: dict[str, dict[str, int]] = {}
+    by_product: dict[str, dict[str, Any]] = {}
 
     try:
         with sqlite3.connect(METRICS_DATABASE_PATH) as conn:
-            cursor = conn.execute(
-                "SELECT event, day, SUM(count) FROM events WHERE day >= ? GROUP BY event, day",
-                (cutoff,),
-            )
-            for event, day, count in cursor.fetchall():
+            cursor = conn.execute(query, params)
+            for product, event, day, count in cursor.fetchall():
                 totals_by_event[event] = totals_by_event.get(event, 0) + count
-                by_day.setdefault(day, {})[event] = count
+                by_day.setdefault(day, {})[event] = by_day[day].get(event, 0) + count
+
+                product_block = by_product.setdefault(
+                    product, {"totals_by_event": {}, "by_day": {}}
+                )
+                product_block["totals_by_event"][event] = (
+                    product_block["totals_by_event"].get(event, 0) + count
+                )
+                product_block["by_day"].setdefault(day, {})[event] = (
+                    product_block["by_day"][day].get(event, 0) + count
+                )
     except sqlite3.Error:
         pass
 
-    return jsonify({
+    result: dict[str, Any] = {
         "since": cutoff,
         "totals_by_event": totals_by_event,
         "by_day": by_day,
-    })
+    }
+    if product_filter in PRODUCTS:
+        result["product"] = product_filter
+    else:
+        result["by_product"] = by_product
+
+    return jsonify(result)
 
 
 # Point d'entrée --------------------------------------------------------------------
