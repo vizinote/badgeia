@@ -1,6 +1,7 @@
 const express = require('express');
 const { initDb, createScan, getScan, updateScanStatus, listPendingScans } = require('./db');
 const { generateId, normalizeUrl, validateUrl, scanWithRetry, closeBrowser } = require('./scanner');
+const { generateReportHtml, generateReportPdf } = require('./reports/reportGenerator');
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -160,6 +161,42 @@ app.get(route('/result/:id'), async (req, res) => {
   } catch (err) {
     console.error('getScan error:', err);
     return makeResponse(res, { ok: false, error: 'Erreur de lecture.' }, 500);
+  }
+});
+
+app.get(route('/report/:id'), async (req, res) => {
+  const clientIp = getClientIp(req);
+  if (!isAllowed(clientIp, 'report', 30, 3600)) {
+    return makeResponse(res, { ok: false, error: 'Quota de rapports atteint. Réessayez dans une heure.' }, 429);
+  }
+
+  try {
+    const scan = await getScan(req.params.id);
+    if (!scan) {
+      return makeResponse(res, { ok: false, error: 'Scan non trouvé.' }, 404);
+    }
+    if (scan.status !== 'done') {
+      return makeResponse(res, { ok: false, error: 'Le scan n\'est pas encore terminé.', status: scan.status }, 425);
+    }
+
+    const format = (req.query.format || 'pdf').toLowerCase();
+    if (format === 'html') {
+      const html = await generateReportHtml(scan);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.send(html);
+    }
+
+    if (format !== 'pdf') {
+      return makeResponse(res, { ok: false, error: 'Format invalide. Utilisez ?format=html ou ?format=pdf (par défaut).' }, 400);
+    }
+
+    const pdf = await generateReportPdf(scan);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="accessicheck-rapport-${scan.id}.pdf"`);
+    return res.send(pdf);
+  } catch (err) {
+    console.error('generateReport error:', err);
+    return makeResponse(res, { ok: false, error: 'Erreur lors de la génération du rapport.' }, 500);
   }
 });
 

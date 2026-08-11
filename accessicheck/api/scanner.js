@@ -344,4 +344,5 @@ module.exports = {
   validateUrl,
   scanWithRetry,
   closeBrowser,
+  getBrowser,
 };
