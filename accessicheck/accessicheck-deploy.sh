@@ -53,10 +53,17 @@ for i in {1..30}; do
   sleep 2
 done
 
-# Recharge Caddy si installé
+# Met à jour la config Caddy
+CADDYFILE_SRC="$REPO_DIR/deploy/Caddyfile"
+CADDYFILE_DST="/etc/caddy/Caddyfile"
+if [ -f "$CADDYFILE_SRC" ]; then
+  echo "Mise à jour Caddyfile"
+  cp "$CADDYFILE_SRC" "$CADDYFILE_DST"
+fi
+
 if systemctl is-active --quiet caddy 2>/dev/null; then
   echo "Reload Caddy"
-  caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile || true
+  caddy reload --config "$CADDYFILE_DST" --adapter caddyfile || true
 fi
 
 echo "=== Deploy OK — $GIT_SHA ==="
