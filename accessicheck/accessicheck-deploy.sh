@@ -21,8 +21,13 @@ fi
 if [ -d "$REPO_DIR/.git" ]; then
   echo "Pull $BRANCH dans $REPO_DIR"
   cd "$REPO_DIR"
+  TOKEN=$(python3 /opt/data/bin/github-token 2>/dev/null | tr -d '\n')
+  if [ -n "$TOKEN" ]; then
+    git remote set-url origin "https://x-access-token:${TOKEN}@github.com/vizinote/badgeia.git"
+  fi
   git fetch origin
   git reset --hard "origin/$BRANCH"
+  git remote set-url origin "$REPO_URL"
 else
   echo "Clone $REPO_URL dans $REPO_DIR"
   git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$REPO_DIR"
