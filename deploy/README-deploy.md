@@ -38,6 +38,11 @@ sudo apt install caddy
 
 Copier la configuration :
 
+> **Important** : `deploy/Caddyfile` est la config **canonique complète** du VPS : elle contient
+> `api.brozapi.com` ET `brozapi.com, www.brozapi.com`. Ce fichier est recopié sur l'hôte par
+> `accessicheck-deploy.sh`. N'y retirez jamais un bloc domaine : le prochain déploiement
+> écraserait la config hôte (incident TLS brozapi.com du 2026-08-11).
+
 ```bash
 sudo cp deploy/Caddyfile /etc/caddy/Caddyfile
 sudo systemctl reload caddy

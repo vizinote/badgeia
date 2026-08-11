@@ -59,11 +59,18 @@ for i in {1..30}; do
 done
 
 # Met à jour la config Caddy
+# Sécurité (incident 2026-08-11) : la Caddyfile hôte contient des blocs hors repo
+# (brozapi.com, www). On sauvegarde systématiquement avant écrasement et on ne
+# recharge Caddy que si le fichier a réellement changé.
 CADDYFILE_SRC="$REPO_DIR/deploy/Caddyfile"
 CADDYFILE_DST="/etc/caddy/Caddyfile"
 if [ -f "$CADDYFILE_SRC" ]; then
-  echo "Mise à jour Caddyfile"
+  if [ -f "$CADDYFILE_DST" ] && ! cmp -s "$CADDYFILE_SRC" "$CADDYFILE_DST"; then
+    cp -a "$CADDYFILE_DST" "${CADDYFILE_DST}.bak.$(date +%s)"
+    echo "Backup Caddyfile créé: ${CADDYFILE_DST}.bak.$(date +%s)"
+  fi
   cp "$CADDYFILE_SRC" "$CADDYFILE_DST"
+  echo "Caddyfile copié (source = deploy/Caddyfile, config canonique complète)"
 fi
 
 if systemctl is-active --quiet caddy 2>/dev/null; then

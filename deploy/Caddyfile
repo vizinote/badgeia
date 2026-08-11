@@ -1,3 +1,7 @@
+# Caddyfile canonique du VPS Brozapi — contient TOUS les domaines servis par cette instance.
+# ATTENTION : ce fichier est copié sur /etc/caddy/Caddyfile par accessicheck-deploy.sh.
+# Ne jamais réduire cette config à un seul domaine : le déploiement suivant écraserait les autres blocs.
+
 api.brozapi.com {
     handle_path /accessicheck/* {
         reverse_proxy 127.0.0.1:8081
@@ -10,5 +14,19 @@ api.brozapi.com {
         X-Frame-Options DENY
         Referrer-Policy strict-origin-when-cross-origin
         X-XSS-Protection "1; mode=block"
+    }
+}
+
+brozapi.com, www.brozapi.com {
+    root * /var/www/brozapi
+    file_server
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        X-XSS-Protection "1; mode=block"
+        -Server
     }
 }
