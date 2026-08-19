@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://badgeia.brozapi.com/</loc><lastmod>2026-08-10</lastmod><priority>1.0</priority></url>
+  <url><loc>https://badgeia.brozapi.com/</loc><lastmod>2026-08-19</lastmod><priority>1.0</priority></url>
+  <url><loc>https://badgeia.brozapi.com/guide-ai-act-pme.pdf</loc><lastmod>2026-08-19</lastmod><priority>0.6</priority></url>
   <url><loc>https://badgeia.brozapi.com/mentions-legales.html</loc><lastmod>2026-08-10</lastmod><priority>0.2</priority></url>
   <url><loc>https://badgeia.brozapi.com/blog/ai-act-article-50-obligations-chatbot.html</loc></url>
   <url><loc>https://badgeia.brozapi.com/blog/ai-act-chatbots-checklist-conformite-pme-2026.html</loc></url>

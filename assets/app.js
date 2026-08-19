@@ -240,6 +240,57 @@ function trackEvent(event, path) {
     });
   }
 
+  const guideForm = document.getElementById("guide-form");
+  if (guideForm) {
+    guideForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const emailInput = document.getElementById("guide-email");
+      const consentInput = document.getElementById("guide-consent");
+      const statusEl = document.getElementById("guide-status");
+      const submitBtn = guideForm.querySelector("button[type='submit']");
+      const originalText = submitBtn.textContent;
+
+      const email = emailInput.value.trim();
+      const consent = consentInput.checked;
+
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        setStatus(statusEl, "Veuillez saisir une adresse email valide.", "error");
+        return;
+      }
+      if (!consent) {
+        setStatus(statusEl, "Vous devez accepter la politique de confidentialité.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Envoi en cours…";
+
+      try {
+        const response = await fetch(API_BASE + "/badgeia/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ email: email, consent: true }),
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          setStatus(statusEl, data.error || "Réessayez dans quelques instants.", "error");
+          return;
+        }
+
+        setStatus(statusEl, "Merci ! Le guide vous a été envoyé par email.", "success");
+        trackEvent("download_guide", location.pathname || "/");
+        emailInput.value = "";
+        consentInput.checked = false;
+      } catch (err) {
+        setStatus(statusEl, "Réessayez dans quelques instants.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  }
+
   function setupBuyButton(btn, key) {
     if (!btn) return;
     if (STRIPE_LINKS[key]) {

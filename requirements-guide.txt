@@ -1,0 +1,4 @@
+# Dépendances pour générer le guide PDF
+# Utilisées uniquement par build-guide.py (pas par l'API runtime).
+weasyprint
+markdown

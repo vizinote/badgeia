@@ -6,10 +6,15 @@ Flask + waitress. Aucun secret en dur.
 import ipaddress
 import os
 import re
+import smtplib
 import socket
 import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Any
 from urllib.parse import urlparse, urlunparse
 
@@ -33,6 +38,18 @@ ALLOWED_ORIGINS = {
     "https://www.brozapi.com",
     "http://localhost",
 }
+
+# Configuration email (lues depuis l'environnement au runtime, jamais en dur).
+SMTP_HOST = os.environ.get("SMTP_HOST", "")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
+SMTP_USER = os.environ.get("SMTP_USER", "")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+SMTP_FROM = os.environ.get("SMTP_FROM", "")
+SMTP_REPLY_TO = os.environ.get("SMTP_REPLY_TO", "")
+GUIDE_PDF_PATH = os.environ.get(
+    "GUIDE_PDF_PATH", os.path.join(os.path.dirname(__file__), "..", "guide-ai-act-pme.pdf")
+)
+GUIDE_PDF_URL = "https://badgeia.brozapi.com/guide-ai-act-pme.pdf"
 
 # Produits supportés par les métriques anonymes.
 PRODUCTS = {"badgeia", "accessicheck"}
@@ -80,6 +97,12 @@ def init_db() -> None:
             )
             """
         )
+        # Migration : ajout de la colonne source pour distinguer les leads guide-pdf.
+        column_exists = conn.execute(
+            "SELECT 1 FROM pragma_table_info('leads') WHERE name = 'source'"
+        ).fetchone()
+        if not column_exists:
+            conn.execute("ALTER TABLE leads ADD COLUMN source TEXT DEFAULT ''")
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS messages (
@@ -185,11 +208,11 @@ def save_message(name: str, email: str, message: str) -> None:
         )
 
 
-def save_lead(email: str, url: str, score: str) -> None:
+def save_lead(email: str, url: str, score: str, source: str = "") -> None:
     with sqlite3.connect(DATABASE_PATH) as conn:
         conn.execute(
-            "INSERT INTO leads (email, url, score, created_at) VALUES (?, ?, ?, ?)",
-            (email, url, score, datetime.now(timezone.utc).isoformat()),
+            "INSERT INTO leads (email, url, score, source, created_at) VALUES (?, ?, ?, ?, ?)",
+            (email, url, score, source, datetime.now(timezone.utc).isoformat()),
         )
 
 
@@ -312,6 +335,78 @@ def send_telegram_alert(email: str, url: str, score: str) -> None:
         app.logger.warning("Échec envoi Telegram : %s", exc)
 
 
+def send_guide_email(email: str) -> None:
+    """Envoie le guide PDF au lead. Ne fait jamais échouer la requête API."""
+    if not all([SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM]):
+        app.logger.warning("SMTP non configuré : email de livraison non envoyé à %s", email)
+        return
+
+    subject = "Votre guide AI Act pour dirigeants de PME"
+    text_body = (
+        f"Bonjour,\n\n"
+        f"Merci pour votre intérêt. Votre guide « AI Act : le guide du dirigeant de PME » "
+        f"est disponible ici : {GUIDE_PDF_URL}\n\n"
+        f"Vous pouvez le télécharger gratuitement et le partager au sein de votre équipe.\n\n"
+        f"Ce guide est fourni à titre indicatif. Il ne constitue pas un conseil juridique "
+        f"ni une garantie de conformité.\n\n"
+        f"Bonne lecture,\n"
+        f"L'équipe Brozapi — BadgeIA\n"
+        f"https://badgeia.brozapi.com\n"
+    )
+    html_body = (
+        f"<html><body style='font-family: system-ui, sans-serif; color:#1a1a1a;'>"
+        f"<p>Bonjour,</p>"
+        f"<p>Merci pour votre intérêt. Votre guide <strong>« AI Act : le guide du dirigeant de PME »</strong> "
+        f"est disponible ici :</p>"
+        f"<p><a href='{GUIDE_PDF_URL}' style='color:#003399;'>Télécharger le guide PDF</a></p>"
+        f"<p>Vous pouvez le télécharger gratuitement et le partager au sein de votre équipe.</p>"
+        f"<p><small>Ce guide est fourni à titre indicatif. Il ne constitue pas un conseil juridique "
+        f"ni une garantie de conformité.</small></p>"
+        f"<p>Bonne lecture,<br>"
+        f"L'équipe Brozapi — BadgeIA<br>"
+        f"<a href='https://badgeia.brozapi.com'>badgeia.brozapi.com</a></p>"
+        f"</body></html>"
+    )
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = SMTP_FROM
+    msg["To"] = email
+    if SMTP_REPLY_TO:
+        msg["Reply-To"] = SMTP_REPLY_TO
+
+    msg.attach(MIMEText(text_body, "plain", "utf-8"))
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    # Pièce jointe si le fichier PDF est disponible localement.
+    pdf_path = os.path.abspath(GUIDE_PDF_PATH)
+    try:
+        if os.path.isfile(pdf_path):
+            with open(pdf_path, "rb") as f:
+                part = MIMEBase("application", "pdf")
+                part.set_payload(f.read())
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                'attachment; filename="guide-ai-act-pme.pdf"',
+            )
+            msg.attach(part)
+            app.logger.info("Pièce jointe PDF ajoutée pour %s", email)
+        else:
+            app.logger.info("PDF local non trouvé (%s) : envoi par lien pour %s", pdf_path, email)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Impossible de joindre le PDF : %s", exc)
+
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_FROM, [email], msg.as_bytes())
+        app.logger.info("Email guide envoyé à %s", email)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Échec envoi email guide à %s : %s", email, exc)
+
+
 def make_cors_response(data: dict, status: int = 200):
     origin = request.headers.get("Origin", "")
     resp = jsonify(data)
@@ -415,6 +510,47 @@ def lead():
     return make_cors_response({"ok": True})
 
 
+@app.route("/badgeia/lead", methods=["POST"])
+def badgeia_lead():
+    """Lead magnet : téléchargement du guide AI Act pour dirigeants de PME."""
+    client_ip = get_client_ip()
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    consent = data.get("consent")
+
+    if consent is not True:
+        return make_cors_response(
+            {"ok": False, "error": "Vous devez accepter la politique de confidentialité."}, 400
+        )
+
+    if not EMAIL_RE.match(email):
+        return make_cors_response({"ok": False, "error": "Adresse email invalide."}, 400)
+
+    if not is_allowed(client_ip, "lead_guide", limit=3, window_seconds=86400):
+        return make_cors_response(
+            {"ok": False, "error": "Quota de demandes atteint. Réessayez demain."}, 429
+        )
+
+    try:
+        save_lead(
+            email=email,
+            url="/guide-ai-act-pme.pdf",
+            score="",
+            source="guide-pdf",
+        )
+    except sqlite3.Error:
+        return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
+
+    # Envoi asynchrone de l'email : ne doit pas faire échouer la requête.
+    try:
+        send_guide_email(email)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Échec envoi email guide après stockage : %s", exc)
+
+    return make_cors_response({"ok": True})
+
+
 def send_contact_alert(name: str, email: str, message: str) -> None:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         return
@@ -467,6 +603,7 @@ def health():
 ALLOWED_EVENTS = {
     "pageview",
     "scan",
+    "download_guide",
     "click_buy_kit",
     "click_buy_suivi",
     "click_buy_oneshot",

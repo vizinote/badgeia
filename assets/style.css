@@ -384,6 +384,50 @@ a:focus {
   color: var(--green);
 }
 
+/* Lead magnet */
+.lead-magnet {
+  background: var(--blue-light);
+}
+
+.lead-magnet__box {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+.lead-magnet__title {
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  margin: 0 0 0.5rem;
+  color: var(--blue-dark);
+}
+
+.lead-magnet__lead {
+  color: var(--gray-700);
+  margin: 0 0 1.25rem;
+  max-width: 720px;
+}
+
+.form__checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+}
+
+.form__checkbox input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.15rem;
+  accent-color: var(--blue);
+  flex-shrink: 0;
+}
+
+.form__checkbox a {
+  color: var(--blue);
+}
+
 /* Cartes */
 .cards {
   display: grid;
