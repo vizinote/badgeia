@@ -73,7 +73,12 @@ for _env_path in ("/data/badgeia-mail.env", "/opt/data/badgeia-mail.env", "/app/
     _load_dotenv(_env_path)
 
 SMTP_HOST = _email_cfg("HOST")
-SMTP_PORT = int(_email_cfg("PORT") or "587")
+# Sécurité port : un port 993/995 est un port IMAP/POP (lecture), pas SMTP.
+# OVH envoie sur 465 (SSL direct) ou 587 (STARTTLS). On force un port cohérent.
+_smtp_port_raw = (_email_cfg("PORT") or "587").strip()
+if _smtp_port_raw in ("993", "995"):
+    _smtp_port_raw = "587"
+SMTP_PORT = int(_smtp_port_raw)
 SMTP_USER = _email_cfg("USER")
 SMTP_PASSWORD = _email_cfg("PASSWORD")
 SMTP_FROM = os.environ.get("SMTP_FROM", "") or SMTP_USER  # par défaut, l'adresse du compte OVH
@@ -430,8 +435,13 @@ def send_guide_email(email: str) -> None:
         app.logger.warning("Impossible de joindre le PDF : %s", exc)
 
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as server:
+        if SMTP_PORT == 465:
+            # SSL direct (déprécié mais encore utilisé par certains hôtes dont OVH).
+            server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15)
+        else:
+            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15)
             server.starttls()
+        with server:
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_FROM, [email], msg.as_bytes())
         app.logger.info("Email guide envoyé à %s", email)
