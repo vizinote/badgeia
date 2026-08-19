@@ -40,11 +40,43 @@ ALLOWED_ORIGINS = {
 }
 
 # Configuration email (lues depuis l'environnement au runtime, jamais en dur).
-SMTP_HOST = os.environ.get("SMTP_HOST", "")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER = os.environ.get("SMTP_USER", "")
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
-SMTP_FROM = os.environ.get("SMTP_FROM", "")
+# Peut aussi provenir d'un fichier .env monté dans /data (badgeia-mail.env),
+# avec des clés MAIL_* mappées sur les SMTP_* attendues par le code.
+def _load_dotenv(path: str) -> None:
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, val = line.partition("=")
+                key = key.strip()
+                val = val.strip().strip("'").strip('"')
+                if key and val and key not in os.environ:
+                    os.environ[key] = val
+    except OSError:
+        pass  # fichier absent : on continue avec les variables existantes
+
+
+def _email_cfg(name: str) -> str:
+    """Récupère une variable SMTP_* avec repli sur son équivalent MAIL_*."""
+    val = os.environ.get("SMTP_" + name)
+    if val:
+        return val
+    # Correspondance MAIL_* -> SMTP_*
+    mapping = {"HOST": "HOST", "PORT": "PORT", "USER": "USER", "PASSWORD": "PASS"}
+    mail_key = mapping.get(name, name)
+    return os.environ.get("MAIL_" + mail_key, "")
+
+
+for _env_path in ("/data/badgeia-mail.env", "/opt/data/badgeia-mail.env", "/app/badgeia-mail.env"):
+    _load_dotenv(_env_path)
+
+SMTP_HOST = _email_cfg("HOST")
+SMTP_PORT = int(_email_cfg("PORT") or "587")
+SMTP_USER = _email_cfg("USER")
+SMTP_PASSWORD = _email_cfg("PASSWORD")
+SMTP_FROM = os.environ.get("SMTP_FROM", "") or SMTP_USER  # par défaut, l'adresse du compte OVH
 SMTP_REPLY_TO = os.environ.get("SMTP_REPLY_TO", "")
 GUIDE_PDF_PATH = os.environ.get(
     "GUIDE_PDF_PATH", os.path.join(os.path.dirname(__file__), "..", "guide-ai-act-pme.pdf")
