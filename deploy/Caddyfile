@@ -3,6 +3,10 @@
 # Ne jamais réduire cette config à un seul domaine : le déploiement suivant écraserait les autres blocs.
 
 api.brozapi.com {
+    handle /accessicheck/lead {
+        reverse_proxy 127.0.0.1:8080
+    }
+
     handle_path /accessicheck/* {
         reverse_proxy 127.0.0.1:8081
     }

@@ -87,6 +87,7 @@ GUIDE_PDF_PATH = os.environ.get(
     "GUIDE_PDF_PATH", os.path.join(os.path.dirname(__file__), "..", "guide-ai-act-pme.pdf")
 )
 GUIDE_PDF_URL = "https://badgeia.brozapi.com/guide-ai-act-pme.pdf"
+ACCESSICHECK_GUIDE_PDF_URL = "https://accessicheck.brozapi.com/guide-accessibilite-eaa.pdf"
 
 # Produits supportés par les métriques anonymes.
 PRODUCTS = {"badgeia", "accessicheck"}
@@ -449,6 +450,66 @@ def send_guide_email(email: str) -> None:
         app.logger.warning("Échec envoi email guide à %s : %s", email, exc)
 
 
+def send_accessicheck_guide_email(email: str) -> None:
+    """Envoie le guide EAA/RGAA au lead AccessiCheck. Ne fait jamais échouer la requête API."""
+    if not all([SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM]):
+        app.logger.warning("SMTP non configuré : email AccessiCheck non envoyé à %s", email)
+        return
+
+    subject = "Votre guide AccessiCheck : EAA & RGAA démystifiés"
+    text_body = (
+        f"Bonjour,\n\n"
+        f"Merci pour votre intérêt. Votre guide « EAA / RGAA : ce que tout site web public doit savoir » "
+        f"est disponible ici : {ACCESSICHECK_GUIDE_PDF_URL}\n\n"
+        f"Vous pouvez le télécharger gratuitement et le partager au sein de votre équipe.\n\n"
+        f"Besoin d'aller plus loin ? Faites auditer votre site pour 29 € : "
+        f"https://accessicheck.brozapi.com/audit-accessibilite-site-web.html\n\n"
+        f"Ce guide est fourni à titre indicatif. Il ne constitue pas un conseil juridique "
+        f"ni une garantie de conformité.\n\n"
+        f"Bonne lecture,\n"
+        f"L'équipe Brozapi — AccessiCheck\n"
+        f"https://accessicheck.brozapi.com\n"
+    )
+    html_body = (
+        f"<html><body style='font-family: system-ui, sans-serif; color:#1a1a1a;'>"
+        f"<p>Bonjour,</p>"
+        f"<p>Merci pour votre intérêt. Votre guide <strong>« EAA / RGAA : ce que tout site web public doit savoir »</strong> "
+        f"est disponible ici :</p>"
+        f"<p><a href='{ACCESSICHECK_GUIDE_PDF_URL}' style='color:#003399;'>Télécharger le guide PDF</a></p>"
+        f"<p>Vous pouvez le télécharger gratuitement et le partager au sein de votre équipe.</p>"
+        f"<p>Besoin d'aller plus loin ? <a href='https://accessicheck.brozapi.com/audit-accessibilite-site-web.html' style='color:#003399;'>Faites auditer votre site pour 29 €</a>.</p>"
+        f"<p><small>Ce guide est fourni à titre indicatif. Il ne constitue pas un conseil juridique "
+        f"ni une garantie de conformité.</small></p>"
+        f"<p>Bonne lecture,<br>"
+        f"L'équipe Brozapi — AccessiCheck<br>"
+        f"<a href='https://accessicheck.brozapi.com'>accessicheck.brozapi.com</a></p>"
+        f"</body></html>"
+    )
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = SMTP_FROM
+    msg["To"] = email
+    if SMTP_REPLY_TO:
+        msg["Reply-To"] = SMTP_REPLY_TO
+
+    msg.attach(MIMEText(text_body, "plain", "utf-8"))
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    try:
+        if SMTP_PORT == 465:
+            server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15)
+        else:
+            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15)
+            server.starttls()
+        with server:
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_FROM, [email], msg.as_bytes())
+        app.logger.info("Email guide AccessiCheck envoyé à %s", email)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Échec envoi email guide AccessiCheck à %s : %s", email, exc)
+
+
 def make_cors_response(data: dict, status: int = 200):
     origin = request.headers.get("Origin", "")
     resp = jsonify(data)
@@ -589,6 +650,46 @@ def badgeia_lead():
         send_guide_email(email)
     except Exception as exc:  # noqa: BLE001
         app.logger.warning("Échec envoi email guide après stockage : %s", exc)
+
+    return make_cors_response({"ok": True})
+
+
+@app.route("/accessicheck/lead", methods=["POST"])
+def accessicheck_lead():
+    """Lead magnet AccessiCheck : téléchargement du guide EAA/RGAA."""
+    client_ip = get_client_ip()
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    consent = data.get("consent")
+
+    if consent is not True:
+        return make_cors_response(
+            {"ok": False, "error": "Vous devez accepter la politique de confidentialité."}, 400
+        )
+
+    if not EMAIL_RE.match(email):
+        return make_cors_response({"ok": False, "error": "Adresse email invalide."}, 400)
+
+    if not is_allowed(client_ip, "lead_accessicheck", limit=3, window_seconds=86400):
+        return make_cors_response(
+            {"ok": False, "error": "Quota de demandes atteint. Réessayez demain."}, 429
+        )
+
+    try:
+        save_lead(
+            email=email,
+            url="/guide-accessibilite-eaa.pdf",
+            score="",
+            source="guide-pdf-accessicheck",
+        )
+    except sqlite3.Error:
+        return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
+
+    try:
+        send_accessicheck_guide_email(email)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.warning("Échec envoi email guide AccessiCheck après stockage : %s", exc)
 
     return make_cors_response({"ok": True})
 
