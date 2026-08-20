@@ -1,6 +1,7 @@
 # Caddyfile canonique du VPS Brozapi — contient TOUS les domaines servis par cette instance.
 # ATTENTION : ce fichier est copié sur /etc/caddy/Caddyfile par accessicheck-deploy.sh.
 # Ne jamais réduire cette config à un seul domaine : le déploiement suivant écraserait les autres blocs.
+# Doit refléter EXACTEMENT l'état du fichier live /etc/caddy/Caddyfile (blocs www + redir inclus).
 
 api.brozapi.com {
     handle /accessicheck/lead {
@@ -18,14 +19,37 @@ api.brozapi.com {
         X-Frame-Options DENY
         Referrer-Policy strict-origin-when-cross-origin
         X-XSS-Protection "1; mode=block"
+        Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'"
+        -Server
     }
 }
 
-brozapi.com, www.brozapi.com {
+brozapi.com {
     root * /var/www/brozapi
     file_server
     encode zstd gzip
 
+    # Redirections 301 des anciennes URLs (ancien site encore indexé par Google, août 2026)
+    redir /preuve-d-achat-et-garantie / permanent
+    redir /preuve-d-achat-et-garantie/ / permanent
+    redir /blog / permanent
+    redir /blog/ / permanent
+    redir /blog/* / permanent
+    redir /politique-de-confidentialite /mentions-legales.html permanent
+    redir /politique-de-confidentialite/ /mentions-legales.html permanent
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        X-XSS-Protection "1; mode=block"
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://badgeia.brozapi.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.brozapi.com; font-src 'self' data: https:; frame-ancestors 'none'; base-uri 'self'"
+        -Server
+    }
+}
+
+www.brozapi.com {
+    redir https://brozapi.com{uri} permanent
     header {
         X-Content-Type-Options nosniff
         X-Frame-Options DENY
