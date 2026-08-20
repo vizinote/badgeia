@@ -743,6 +743,32 @@ def health():
     return jsonify({"ok": True})
 
 
+# Messages d'erreur propres (JSON) : ne pas laisser fuiter la stack/framework HTML du backend.
+@app.errorhandler(404)
+def not_found(_e):
+    return make_cors_response({"ok": False, "error": "Ressource non trouvée."}, 404)
+
+
+@app.errorhandler(400)
+def bad_request(_e):
+    return make_cors_response({"ok": False, "error": "Requête invalide."}, 400)
+
+
+@app.errorhandler(405)
+def method_not_allowed(_e):
+    return make_cors_response({"ok": False, "error": "Méthode non autorisée."}, 405)
+
+
+@app.errorhandler(413)
+def payload_too_large(_e):
+    return make_cors_response({"ok": False, "error": "Corps de requête trop volumineux."}, 413)
+
+
+@app.errorhandler(500)
+def server_error(_e):
+    return make_cors_response({"ok": False, "error": "Erreur interne. Réessayez plus tard."}, 500)
+
+
 ALLOWED_EVENTS = {
     "pageview",
     "scan",
@@ -833,5 +859,5 @@ def stats():
 if __name__ == "__main__":
     init_db()
     init_metrics_db()
-    serve(app, host="0.0.0.0", port=8080)
+    serve(app, host="0.0.0.0", port=8080, max_request_body_size=2 * 1024 * 1024)
 
