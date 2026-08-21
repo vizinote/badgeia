@@ -12,6 +12,9 @@
   <meta property="og:locale" content="fr_FR">
   <meta property="og:image" content="https://badgeia.brozapi.com/assets/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BadgeIA — Transparence AI Act pour petits sites">
+  <meta name="twitter:description" content="Scanner gratuit, widget de transparence et registre IA daté : la conformité AI Act réglée en 2 minutes.">
+  <meta name="twitter:image" content="https://badgeia.brozapi.com/assets/og-image.png">
   <meta name="google-site-verification" content="8d5MMT0bK9rF5Is1omQYrG2vCvEZAX_IrtPA80-Jn18" />
   <link rel="canonical" href="https://badgeia.brozapi.com/">
   <script type="application/ld+json">
@@ -56,13 +59,48 @@
   <main id="contenu">
     <section class="hero" aria-labelledby="hero-title">
       <div class="container">
-        <h1 id="hero-title">Votre site utilise l'IA. Êtes-vous en règle ?</h1>
-        <p class="hero__subtitle">
-          Chatbot, textes ou images générés par IA : l'AI Act européen impose d'informer vos visiteurs.
-          Applicable depuis le 2 août 2026 — amendes jusqu'à 15 M€ ou 3 % du chiffre d'affaires (article 99).
-          Scannez votre site pour savoir si vous êtes concerné.
-        </p>
-        <a class="hero__cta" href="#scanner">Scanner mon site gratuitement</a>
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <h1 id="hero-title">Votre site utilise l'IA. Êtes-vous en règle ?</h1>
+            <p class="hero__subtitle">
+              Chatbot, textes ou images générés par IA : l'AI Act européen impose d'informer vos visiteurs.
+              Applicable depuis le 2 août 2026 — amendes jusqu'à 15 M€ ou 3 % du chiffre d'affaires (article 99).
+              Scannez votre site pour savoir si vous êtes concerné.
+            </p>
+            <a class="hero__cta" href="#scanner">Scanner mon site gratuitement</a>
+          </div>
+          <div class="hero__visual" aria-hidden="true">
+            <div class="hero__visual-wrap">
+              <span class="hero__flag">Exemple de résultat</span>
+              <!-- Maquette du badge IA (inline SVG, aucun fichier externe) -->
+              <div class="hero__mock">
+                <p class="hero__mock-title">Badge de transparence</p>
+                <div class="hero__mock-row">
+                  <svg class="hero__mock-dot" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="1" y="1" width="22" height="22" rx="7" fill="#003399"/>
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM11 18.5c-4-.5-7-3.8-7-8 0-.6.1-1.2.2-1.8L9 15V12.5c0 1.1.9 2 2 1.9z" fill="#fff"/>
+                    <path d="M3.5 19 3 9v1c0 1.2 1.2 1.2 1.2v-.8c1.1.6 1.3.9 1.3 1.4 0 1.7-.5 1.9-.5 2.1" fill="#fff" opacity=".9"/>
+                  </svg>
+                  <p class="hero__mock-text"><strong>Transparence IA</strong> — les interactions et contenus générés par IA sont déclarés.</p>
+                </div>
+                <div class="hero__mock-row">
+                  <svg class="hero__mock-dot" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="4" y="3" width="16" height="4" rx="1" fill="#003399"/>
+                    <rect x="4" y="10" width="16" height="4" rx="1" fill="#003399"/>
+                    <rect x="4" y="17" width="16" height="4" rx="1" fill="#003399"/>
+                  </svg>
+                  <p class="hero__mock-text">Page registre IA publique et datée — votre preuve de bonne foi.</p>
+                </div>
+              </div>
+              <!-- Verdict de scan stylisé -->
+              <div class="hero__mock-scan">
+                <p class="hero__mock-title"><span class="hero__mock-url">mon-site.fr</span></p>
+                <p class="hero__mock-status">Succès — chatterbot détecté sans mention de transparence visible.</p>
+                <span class="hero__mock-score">✓ Conformité vérifiée</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

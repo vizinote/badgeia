@@ -151,6 +151,24 @@ a:focus {
   background: linear-gradient(180deg, var(--blue-light) 0%, var(--white) 100%);
 }
 
+.hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero__copy {
+  min-width: 0;
+}
+
+.hero__visual {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 .hero h1 {
   font-size: clamp(1.9rem, 5vw, 3rem);
   line-height: 1.15;
@@ -186,6 +204,111 @@ a:focus {
 .hero__cta:focus {
   background: var(--blue-dark);
   color: var(--white);
+}
+
+/* Mock produit du hero (pur CSS/SVG inline, aucun fichier externe) */
+.hero__mock {
+  background: #ffffff;
+  border: 1px solid var(--gray-300);
+  border-radius: 1rem;
+  box-shadow: 0 14px 0 rgba(0, 51, 153, 0.06);
+  padding: 1.35rem;
+}
+
+.hero__mock-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gray-500);
+  margin: 0 0 0.9rem;
+}
+
+.hero__mock-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.hero__mock-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--green);
+  flex: 0 0 auto;
+  margin-top: 0.25rem;
+}
+
+.hero__mock-text {
+  font-size: 0.92rem;
+  color: var(--gray-700);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.hero__mock-scan {
+  background: #ffffff;
+  border: 1px solid var(--gray-300);
+  border-radius: 1rem;
+  box-shadow: 0 6px 0 rgba(0, 51, 153, 0.05);
+  padding: 1.1rem;
+}
+
+.hero__mock-row p + .hero__mock-signal strong {
+  color: var(--blue-dark);
+}
+
+.hero__mock-title {
+  display: block;
+  background: #f1f4fc;
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--blue-dark);
+  margin: 0 0 0.5rem;
+}
+
+.hero__mock-title .hero__mock-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.hero__mock-status {
+  font-size: 0.92rem;
+  color: var(--gray-700);
+  line-height: 1.45;
+  margin: 0 0 0.5rem;
+}
+
+.hero__mock-score {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  background: var(--green-bg);
+  color: var(--green);
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.hero__flag {
+  /* pastille "Exemple de résultat" collée en haut du mock */
+  position: absolute;
+  top: -0.55rem;
+  left: 1rem;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.hero__visual-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* Urgence */
@@ -607,6 +730,10 @@ a:focus {
 
   .hero {
     padding: 2.5rem 0 2rem;
+  }
+
+  .hero__inner {
+    grid-template-columns: 1fr;
   }
 
   .section {
