@@ -24,6 +24,21 @@ api.brozapi.com {
     }
 }
 
+# Redirection 301 explicite http -> https pour brozapi.com et www.brozapi.com
+# (l'auto-redirect Caddy renvoie 308 ; le défaut du navigateur est acceptable,
+#  mais on force 301 pour un comportement SEO déterministe).
+http://brozapi.com, http://www.brozapi.com {
+    redir https://brozapi.com{uri} permanent
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        X-XSS-Protection "1; mode=block"
+        -Server
+    }
+}
+
 brozapi.com {
     root * /var/www/brozapi
     file_server
