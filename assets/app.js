@@ -12,8 +12,8 @@ const STRIPE_LINKS = {
 const API_BASE = "https://api.brozapi.com";
 
 /**
- * Envoie un événement de mesure d'audience anonyme.
- * Aucun cookie, aucune IP, aucun identifiant n'est transmis.
+ * Envoie un événement de mesure d’audience anonyme.
+ * Aucun cookie, aucune IP, aucun identifiant n’est transmis.
  */
 function trackEvent(event, path) {
   try {
@@ -68,7 +68,7 @@ function trackEvent(event, path) {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
+      .replace(/\u0027/g, "&#39;");
   }
 
   function renderVerdictClass(verdict) {
@@ -79,8 +79,12 @@ function trackEvent(event, path) {
 
   function renderVerdictTitle(verdict, systemsCount) {
     if (verdict === "ok") return "✓ Aucun système IA détecté";
-    if (verdict === "warning") return "◌ Systèmes IA détectés, mention visible";
-    return "✕ Systèmes IA détectés sans mention visible";
+    if (verdict === "warning") return "◌ Chatbot IA détecté — mention de transparence présente";
+    const count = systemsCount || 1;
+    const mention = count > 1 ? "mentions" : "mention";
+    const manquante = count > 1 ? "manquantes" : "manquante";
+    if (count === 1) return "Chatbot IA détecté — 1 " + mention + " de transparence " + manquante;
+    return "Chatbots IA détectés — " + count + " " + mention + " de transparence " + manquante;
   }
 
   function renderSystems(systems) {
@@ -100,7 +104,7 @@ function trackEvent(event, path) {
   }
 
   // Note : le résultat est injecté via innerHTML mais construit exclusivement
-  // à partir de données provenant de l'API et échappées ci-dessus.
+  // à partir de données provenant de l’API et échappées ci-dessus.
   function renderScanResult(data) {
     clearChildren(scanResult);
     scanResult.className = "result " + renderVerdictClass(data.verdict);
@@ -145,7 +149,7 @@ function trackEvent(event, path) {
         url = "https://" + url;
         input.value = url;
       }
-      const submitBtn = scanForm.querySelector("button[type='submit']");
+      const submitBtn = scanForm.querySelector("button[type=\"submit\"]");
       const originalBtnText = submitBtn.innerHTML;
 
       if (!url) {
@@ -201,7 +205,7 @@ function trackEvent(event, path) {
       const input = document.getElementById("lead-email");
       const email = input.value.trim();
       const statusEl = document.getElementById("email-status");
-      const submitBtn = emailForm.querySelector("button[type='submit']");
+      const submitBtn = emailForm.querySelector("button[type=\"submit\"]");
       const originalText = submitBtn.textContent;
 
       if (!email || !email.includes("@") || !email.includes(".")) {
@@ -247,7 +251,7 @@ function trackEvent(event, path) {
       const emailInput = document.getElementById("guide-email");
       const consentInput = document.getElementById("guide-consent");
       const statusEl = document.getElementById("guide-status");
-      const submitBtn = guideForm.querySelector("button[type='submit']");
+      const submitBtn = guideForm.querySelector("button[type=\"submit\"]");
       const originalText = submitBtn.textContent;
 
       const email = emailInput.value.trim();
@@ -310,7 +314,7 @@ function trackEvent(event, path) {
   setupBuyButton(buyKitBtn, "kit39");
   setupBuyButton(buySuiviBtn, "suivi6");
 
-  // Mesures d'audience anonymes (aucun cookie, aucune IP).
+  // Mesures d’audience anonymes (aucun cookie, aucune IP).
   document.addEventListener("DOMContentLoaded", function () {
     trackEvent("pageview", location.pathname || "/");
   });
