@@ -45,13 +45,17 @@ brozapi.com {
     encode zstd gzip
 
     # Redirections 301 des anciennes URLs (ancien site encore indexé par Google, août 2026)
-    redir /preuve-d-achat-et-garantie / permanent
-    redir /preuve-d-achat-et-garantie/ / permanent
-    redir /blog / permanent
-    redir /blog/ / permanent
-    redir /blog/* / permanent
+    redir /preuve-d-achat-et-garantie https://brozapi.com/ permanent
+    redir /preuve-d-achat-et-garantie/ https://brozapi.com/ permanent
+    redir /blog https://brozapi.com/ permanent
+    redir /blog/ https://brozapi.com/ permanent
+    redir /blog/* https://brozapi.com/ permanent
     redir /politique-de-confidentialite /mentions-legales.html permanent
     redir /politique-de-confidentialite/ /mentions-legales.html permanent
+    # Variantes avec extension .html (404 signalés en Search Console, 23/08)
+    redir /preuve-d-achat-et-garantie.html https://brozapi.com/ permanent
+    redir /blog.html https://brozapi.com/ permanent
+    redir /guide.html https://brozapi.com/ permanent
 
     header {
         X-Content-Type-Options nosniff
@@ -70,6 +74,26 @@ www.brozapi.com {
         X-Frame-Options DENY
         Referrer-Policy strict-origin-when-cross-origin
         X-XSS-Protection "1; mode=block"
+        -Server
+    }
+}
+
+# app.brozapi.com — sous-domaine applicatif (pas de service actif pour l'instant).
+# Décision SEO (23/08/2026, carte t_7e457034) : Google explorait des assets Next.js
+# sur ce sous-domaine. On répond 410 Gone + robots disallow all : c'est un sous-domaine
+# technique/app, pas du contenu à indexer. Quand l'app y sera déployée, ajouter ici
+# un reverse_proxy + robots.txt noindex.
+app.brozapi.com {
+    respond /robots.txt 200 {
+        body "User-agent: *
+Disallow: /
+"
+        close
+    }
+    respond 410
+
+    header {
+        X-Content-Type-Options nosniff
         -Server
     }
 }
