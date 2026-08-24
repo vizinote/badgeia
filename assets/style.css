@@ -106,10 +106,11 @@ a:focus {
 
 .logo {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.5rem;
   text-decoration: none;
   color: var(--gray-900);
+  min-height: 44px; /* cible tactile WCAG 2.5.8 */
 }
 
 .logo__name {
@@ -133,6 +134,12 @@ a:focus {
 }
 
 .nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* cible tactile WCAG 2.5.8 */
+  min-width: 44px;
+  padding: 0 0.25rem;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--gray-700);
@@ -661,7 +668,7 @@ a:focus {
 .widget-live p {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--gray-500);
+  color: var(--gray-700); /* contraste >= 4,5:1 sur gray-100 */
 }
 
 .footer {
@@ -685,7 +692,7 @@ a:focus {
 
 .footer__disclaimer {
   font-size: 0.85rem;
-  color: var(--gray-500);
+  color: var(--gray-700); /* contraste >= 4,5:1 sur gray-100 */
   border-top: 1px solid var(--gray-300);
   padding-top: 1.25rem;
   margin: 0;

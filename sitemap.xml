@@ -55,4 +55,9 @@
   <url><loc>https://badgeia.brozapi.com/blog/transparence-ia-reflexe-confiance-signalement-contenus.html</loc></url>
   <url><loc>https://badgeia.brozapi.com/blog/apple-app-store-dma-conformite-numerique-avantage-saas.html</loc></url>
 <url><loc>https://badgeia.brozapi.com/blog/ou-afficher-mention-transparence-ia-site.html</loc></url>
+  <url>
+    <loc>https://badgeia.brozapi.com/declaration-accessibilite.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
