@@ -114,9 +114,15 @@
     fontSize: "1.4rem",
     lineHeight: "1",
     cursor: "pointer",
-    padding: "0 0.25rem",
+    padding: "0",
     margin: "-0.25rem -0.25rem -0.25rem 0",
     borderRadius: "0.25rem",
+    // cible tactile >= 44x44 px (WCAG 2.5.8) : le glyphe reste centre
+    minWidth: "44px",
+    minHeight: "44px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
   });
 
   closeBtn.addEventListener("mouseover", function () {
