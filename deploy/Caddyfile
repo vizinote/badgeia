@@ -97,3 +97,17 @@ Disallow: /
         -Server
     }
 }
+# citescan.brozapi.com — CiteScan (conteneur citescan-api, port 8083). Carte 3.4 (23/08/2026).
+# NOTE : DNS du sous-domaine pas encore créé (action Franck, zone OVH) — le certificat
+# TLS sera émis automatiquement dès que l'enregistrement A/CNAME pointera sur le VPS.
+citescan.brozapi.com {
+    reverse_proxy 127.0.0.1:8083
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'"
+        -Server
+    }
+}
