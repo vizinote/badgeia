@@ -115,6 +115,8 @@ citescan.brozapi.com {
 # DODOS-BEGIN (carte t_53f2af1d, 03/09/2026) — Dodos by Brozapi : site statique
 # /var/www/dodos + API commandes (conteneur dodos-api, port 8084).
 dodos.brozapi.com {
+    @metajson path /s/*/meta.json
+    respond @metajson 404
     handle_path /api/* {
         reverse_proxy 127.0.0.1:8084 {
             header_up X-Real-IP {remote_host}
