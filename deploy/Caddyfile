@@ -111,3 +111,21 @@ citescan.brozapi.com {
         -Server
     }
 }
+
+# DODOS-BEGIN (carte t_53f2af1d, 03/09/2026) — Dodos by Brozapi : site statique
+# /var/www/dodos + API commandes (conteneur dodos-api, port 8084).
+dodos.brozapi.com {
+    handle_path /api/* {
+        reverse_proxy 127.0.0.1:8084
+    }
+    root * /var/www/dodos
+    file_server
+    encode zstd gzip
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'"
+        -Server
+    }
+}
+# DODOS-END
