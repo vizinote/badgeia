@@ -116,7 +116,9 @@ citescan.brozapi.com {
 # /var/www/dodos + API commandes (conteneur dodos-api, port 8084).
 dodos.brozapi.com {
     handle_path /api/* {
-        reverse_proxy 127.0.0.1:8084
+        reverse_proxy 127.0.0.1:8084 {
+            header_up X-Real-IP {remote_host}
+        }
     }
     root * /var/www/dodos
     file_server
