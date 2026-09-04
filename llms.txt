@@ -1,0 +1,16 @@
+# BadgeIA
+
+> BadgeIA est un kit de transparence AI Act (article 50) pour les sites qui utilisent l'IA générative : scanner gratuit, widget de disclosure à coller, registre IA public daté et guide PDF. Produit du studio Brozapi (France). Kit 39 € en paiement unique, suivi mensuel 6 €/mois. Outil technique d'aide à la transparence, sans garantie de conformité.
+
+## Pages clés
+
+- [Accueil et scanner gratuit](https://badgeia.brozapi.com/)
+- [Offres et tarifs](https://badgeia.brozapi.com/#offres)
+- [Guides AI Act (blog)](https://badgeia.brozapi.com/blog/)
+- [Guide AI Act PME (PDF)](https://badgeia.brozapi.com/guide-ai-act-pme.pdf)
+- [Déclaration d'accessibilité](https://badgeia.brozapi.com/declaration-accessibilite.html)
+- [Mentions légales](https://badgeia.brozapi.com/mentions-legales.html)
+
+## Contact
+
+- Studio Brozapi : https://brozapi.com/ — contact@brozapi.com
