@@ -801,3 +801,20 @@ a:focus {
 #demo-widget {
   margin-top: 0.6rem;
 }
+
+/* Mise en évidence temporaire du badge déjà affiché (bouton « Voir le badge en action ») */
+@keyframes badgeia-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+#badgeia-disclosure-widget.badgeia-pulse {
+  animation: badgeia-pulse-ring 0.9s ease-out 2;
+  border-radius: 12px;
+}

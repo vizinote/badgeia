@@ -344,20 +344,27 @@ function trackEvent(event, path) {
     });
   });
 
-  // Démo du widget : injecte le vrai snippet produit sur la page.
+  // Démo du widget : le badge est déjà affiché (chargé en bas de page) ;
+  // au clic, on scrolle en bas, on fait pulser le widget et on donne un feedback texte.
   const demoBtn = document.getElementById("demo-widget");
   if (demoBtn) {
+    const initialLabel = demoBtn.textContent;
     demoBtn.addEventListener("click", function () {
-      if (document.getElementById("badgeia-disclosure-widget")) return;
-      const s = document.createElement("script");
-      s.src = "widget/badgeia.js";
-      s.setAttribute("data-lang", "fr");
-      s.setAttribute("data-position", "bottom-right");
-      s.setAttribute("data-color", "blue");
-      s.async = false;
-      document.body.appendChild(s);
-      demoBtn.textContent = "Widget affiché en bas à droite ↘ (refermable)";
-      demoBtn.disabled = true;
+      const widget = document.getElementById("badgeia-disclosure-widget");
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+      if (widget) {
+        widget.classList.remove("badgeia-pulse");
+        // Forcer le reflow pour relancer l'animation à chaque clic.
+        void widget.offsetWidth;
+        widget.classList.add("badgeia-pulse");
+        setTimeout(function () {
+          widget.classList.remove("badgeia-pulse");
+        }, 2000);
+      }
+      demoBtn.textContent = "Widget affiché en bas à droite ↘";
+      setTimeout(function () {
+        demoBtn.textContent = initialLabel;
+      }, 3000);
     });
   }
 })();
