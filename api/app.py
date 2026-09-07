@@ -141,6 +141,16 @@ def init_db() -> None:
         ).fetchone()
         if not column_exists:
             conn.execute("ALTER TABLE leads ADD COLUMN source TEXT DEFAULT ''")
+        # Migration RGPD : preuve de consentement (horodatage, texte, source).
+        def ensure_consent_columns(table: str) -> None:
+            for col in ("consent_at", "consent_text", "consent_source"):
+                col_exists = conn.execute(
+                    f"SELECT 1 FROM pragma_table_info('{table}') WHERE name = '{col}'"
+                ).fetchone()
+                if not col_exists:
+                    conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} TEXT DEFAULT ''")
+
+        ensure_consent_columns("leads")
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS messages (
@@ -152,6 +162,7 @@ def init_db() -> None:
             )
             """
         )
+        ensure_consent_columns("messages")
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS scans (
@@ -230,6 +241,34 @@ def track_event(event: str, path: str, product: str = "badgeia") -> None:
         pass  # les stats ne doivent jamais casser l'application
 
 
+# Preuve de consentement RGPD (mini-CRM, t_e210c35e) --------------------------
+CONSENT_GUIDE_TEXT = (
+    "J'accepte la politique de confidentialité et je souhaite recevoir le guide."
+)
+CONSENT_SCANNER_TEXT = (
+    "Prospection B2B métier (intérêt légitime) — pas de case à cocher"
+)
+CONSENT_CONTACT_TEXT = "Demande entrante via formulaire de contact"
+# Export plat de la liste de désinscription globale (/opt/data/crm/desinscrits.db),
+# synchronisé par /opt/data/crm/crm.py dans le volume du conteneur.
+DESINSCRITS_PATH = os.environ.get("DESINSCRITS_PATH", "/data/desinscrits.txt")
+DESINSCRIPTION_FOOTER = (
+    "Pour ne plus recevoir nos emails, écrivez à contact@brozapi.com "
+    "avec « désinscription » en objet."
+)
+
+
+def is_desinscrit(email: str) -> bool:
+    """True si l'adresse figure sur la liste de désinscription globale."""
+    try:
+        with open(DESINSCRITS_PATH) as fh:
+            return (email or "").strip().lower() in {
+                line.strip().lower() for line in fh if line.strip()
+            }
+    except OSError:
+        return False  # liste absente = pas de désinscrit connu
+
+
 def save_scan(domain: str, verdict: str, systems_count: int) -> None:
     with sqlite3.connect(DATABASE_PATH) as conn:
         conn.execute(
@@ -239,18 +278,29 @@ def save_scan(domain: str, verdict: str, systems_count: int) -> None:
 
 
 def save_message(name: str, email: str, message: str) -> None:
+    now = datetime.now(timezone.utc).isoformat()
     with sqlite3.connect(DATABASE_PATH) as conn:
         conn.execute(
-            "INSERT INTO messages (name, email, message, created_at) VALUES (?, ?, ?, ?)",
-            (name, email, message, datetime.now(timezone.utc).isoformat()),
+            "INSERT INTO messages (name, email, message, created_at, consent_at, consent_text, consent_source)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (name, email, message, now, now, CONSENT_CONTACT_TEXT, "badgeia-contact-form"),
         )
 
 
-def save_lead(email: str, url: str, score: str, source: str = "") -> None:
+def save_lead(
+    email: str,
+    url: str,
+    score: str,
+    source: str = "",
+    consent_text: str = CONSENT_SCANNER_TEXT,
+    consent_source: str = "badgeia-scanner",
+) -> None:
+    now = datetime.now(timezone.utc).isoformat()
     with sqlite3.connect(DATABASE_PATH) as conn:
         conn.execute(
-            "INSERT INTO leads (email, url, score, source, created_at) VALUES (?, ?, ?, ?, ?)",
-            (email, url, score, source, datetime.now(timezone.utc).isoformat()),
+            "INSERT INTO leads (email, url, score, source, created_at, consent_at, consent_text, consent_source)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (email, url, score, source, now, now, consent_text, consent_source),
         )
 
 
@@ -375,6 +425,9 @@ def send_telegram_alert(email: str, url: str, score: str) -> None:
 
 def send_guide_email(email: str) -> None:
     """Envoie le guide PDF au lead. Ne fait jamais échouer la requête API."""
+    if is_desinscrit(email):
+        app.logger.info("Email guide NON envoyé à %s : désinscrit (liste globale)", email)
+        return
     if not all([SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM]):
         app.logger.warning("SMTP non configuré : email de livraison non envoyé à %s", email)
         return
@@ -389,7 +442,8 @@ def send_guide_email(email: str) -> None:
         f"ni une garantie de conformité.\n\n"
         f"Bonne lecture,\n"
         f"L'équipe Brozapi — BadgeIA\n"
-        f"https://badgeia.brozapi.com\n"
+        f"https://badgeia.brozapi.com\n\n"
+        f"{DESINSCRIPTION_FOOTER}\n"
     )
     html_body = (
         f"<html><body style='font-family: system-ui, sans-serif; color:#1a1a1a;'>"
@@ -403,6 +457,7 @@ def send_guide_email(email: str) -> None:
         f"<p>Bonne lecture,<br>"
         f"L'équipe Brozapi — BadgeIA<br>"
         f"<a href='https://badgeia.brozapi.com'>badgeia.brozapi.com</a></p>"
+        f"<p><small>{DESINSCRIPTION_FOOTER}</small></p>"
         f"</body></html>"
     )
 
@@ -452,6 +507,9 @@ def send_guide_email(email: str) -> None:
 
 def send_accessicheck_guide_email(email: str) -> None:
     """Envoie le guide EAA/RGAA au lead AccessiCheck. Ne fait jamais échouer la requête API."""
+    if is_desinscrit(email):
+        app.logger.info("Email AccessiCheck NON envoyé à %s : désinscrit (liste globale)", email)
+        return
     if not all([SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM]):
         app.logger.warning("SMTP non configuré : email AccessiCheck non envoyé à %s", email)
         return
@@ -468,7 +526,8 @@ def send_accessicheck_guide_email(email: str) -> None:
         f"ni une garantie de conformité.\n\n"
         f"Bonne lecture,\n"
         f"L'équipe Brozapi — AccessiCheck\n"
-        f"https://accessicheck.brozapi.com\n"
+        f"https://accessicheck.brozapi.com\n\n"
+        f"{DESINSCRIPTION_FOOTER}\n"
     )
     html_body = (
         f"<html><body style='font-family: system-ui, sans-serif; color:#1a1a1a;'>"
@@ -483,6 +542,7 @@ def send_accessicheck_guide_email(email: str) -> None:
         f"<p>Bonne lecture,<br>"
         f"L'équipe Brozapi — AccessiCheck<br>"
         f"<a href='https://accessicheck.brozapi.com'>accessicheck.brozapi.com</a></p>"
+        f"<p><small>{DESINSCRIPTION_FOOTER}</small></p>"
         f"</body></html>"
     )
 
@@ -641,6 +701,8 @@ def badgeia_lead():
             url="/guide-ai-act-pme.pdf",
             score="",
             source="guide-pdf",
+            consent_text=CONSENT_GUIDE_TEXT,
+            consent_source="badgeia-guide-form",
         )
     except sqlite3.Error:
         return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
@@ -682,6 +744,8 @@ def accessicheck_lead():
             url="/guide-accessibilite-eaa.pdf",
             score="",
             source="guide-pdf-accessicheck",
+            consent_text=CONSENT_GUIDE_TEXT,
+            consent_source="accessicheck-guide-form",
         )
     except sqlite3.Error:
         return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
