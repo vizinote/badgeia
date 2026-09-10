@@ -849,6 +849,17 @@ ALLOWED_EVENTS = {
     "click_buy_monitoring",
     "scan_triggered",
     "payment_confirmed",
+    # AccessiCheck (accessicheck.brozapi.com) — data-track index.html/en/index.html + assets/app.js
+    "click_exemple_pdf_oneshot",
+    "click_exemple_pdf_pro",
+    "click_exemple_pdf_oneshot_brozapi",
+    "click_exemple_pdf_pro_brozapi",
+    "click_scan_cta_stripe",
+    "scan_triggered_oneshot",
+    "scan_triggered_pro",
+    "scan_triggered_monitoring",
+    "scan_done_free",
+    "scan_entered",
 }
 
 
