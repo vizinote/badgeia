@@ -38,13 +38,35 @@ class LeadTestCase(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.get_json()["ok"])
-        self.save_lead.assert_called_once_with("test@example.com", "https://crisp.chat/", "alert", source="scan")
+        # Case cochée : la preuve stockée reprend la formulation exacte du formulaire.
+        self.save_lead.assert_called_once_with(
+            "test@example.com",
+            "https://crisp.chat/",
+            "alert",
+            source="scan",
+            consent_text=app.CONSENT_GUIDE_TEXT,
+        )
         self.guide.assert_called_once_with("test@example.com")
+
+    def test_consent_text_est_la_formulation_de_la_case(self):
+        self._post({"email": "a@b.co", "url": "https://x.y/", "score": "ok", "consent": True})
+        _, kwargs = self.save_lead.call_args
+        self.assertEqual(
+            kwargs["consent_text"],
+            "J'accepte la politique de confidentialité et je souhaite recevoir le guide.",
+        )
 
     def test_sans_consent_pas_d_email(self):
         resp = self._post({"email": "a@b.co", "url": "https://x.y/", "score": "ok"})
         self.assertEqual(resp.status_code, 200)
-        self.save_lead.assert_called_once()
+        # Pas de case cochée : intérêt légitime, aucun email.
+        self.save_lead.assert_called_once_with(
+            "a@b.co",
+            "https://x.y/",
+            "ok",
+            source="scan",
+            consent_text=app.CONSENT_SCANNER_TEXT,
+        )
         self.guide.assert_not_called()
 
     def test_consent_false_pas_d_email(self):

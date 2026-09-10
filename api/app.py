@@ -669,16 +669,25 @@ def lead():
     if not EMAIL_RE.match(email):
         return make_cors_response({"ok": False, "error": "Adresse email invalide."}, 400)
 
+    # Le front n'envoie consent=true que si la case RGPD est cochée
+    # (checkbox obligatoire depuis b4b7829) : la preuve stockée doit
+    # refléter la formulation exacte affichée dans le formulaire.
+    consent = data.get("consent") is True
     try:
-        save_lead(email, url, score, source="scan")
+        save_lead(
+            email,
+            url,
+            score,
+            source="scan",
+            consent_text=CONSENT_GUIDE_TEXT if consent else CONSENT_SCANNER_TEXT,
+        )
     except sqlite3.Error as exc:
         return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
 
     send_telegram_alert(email, url, score)
 
-    # Le front n'envoie consent=true que si la case RGPD est cochée :
-    # jamais d'email sans consentement explicite.
-    if data.get("consent") is True:
+    # Jamais d'email marketing sans consentement explicite.
+    if consent:
         try:
             send_guide_email(email)
         except Exception as exc:  # noqa: BLE001
