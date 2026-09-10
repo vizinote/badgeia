@@ -18,14 +18,12 @@ const API_BASE = "https://api.brozapi.com";
 function trackEvent(event, path) {
   try {
     var payload = JSON.stringify({ event: event, path: path });
-    navigator.sendBeacon
-      ? navigator.sendBeacon(API_BASE + "/track", new Blob([payload], { type: "application/json" }))
-      : fetch(API_BASE + "/track", {
-          method: "POST",
-          keepalive: true,
-          headers: { "Content-Type": "application/json" },
-          body: payload,
-        }).catch(function () {});
+    fetch(API_BASE + "/track", {
+      method: "POST",
+      keepalive: true,
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    }).catch(function () {});
   } catch (e) {
     // silencieux : la mesure ne doit jamais bloquer le site
   }
