@@ -133,6 +133,21 @@ function trackEvent(event, path) {
       "</small>";
     scanResult.appendChild(small);
 
+    // CTA d'achat contextuel : uniquement sur verdict "alert" (chatbot détecté
+    // sans mention de transparence). Chaîne statique, aucune donnée API injectée.
+    if (data.verdict === "alert" && STRIPE_LINKS.kit39) {
+      const buyCta = document.createElement("a");
+      buyCta.className = "btn btn--primary";
+      buyCta.href = STRIPE_LINKS.kit39;
+      buyCta.target = "_blank";
+      buyCta.rel = "noopener";
+      buyCta.textContent = "Corriger ça maintenant — Kit BadgeIA 39 €";
+      buyCta.addEventListener("click", function () {
+        trackEvent("click_buy_kit_result", location.pathname || "/");
+      });
+      scanResult.appendChild(buyCta);
+    }
+
     emailGate.hidden = false;
     scanResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
