@@ -168,11 +168,17 @@
           <div id="email-gate" class="email-gate" hidden>
             <h3>Recevez le guide pratique AI Act par email</h3>
             <p>Le scan vous donne un diagnostic immédiat. Indiquez votre email pour recevoir le guide PDF qui complète ce diagnostic et vous aide à mettre votre site en conformité.</p>
-            <form id="email-form" class="form">
+            <form id="email-form" class="form" novalidate>
               <div class="form__row">
                 <label for="lead-email" class="visually-hidden">Adresse email</label>
                 <input id="lead-email" type="email" name="email" placeholder="vous@exemple.fr" required>
                 <button class="btn btn--secondary" type="submit">Recevoir le guide</button>
+              </div>
+              <div class="form__checkbox">
+                <input id="lead-consent" type="checkbox" name="consent" value="1" required>
+                <label for="lead-consent">
+                  J’accepte la <a href="mentions-legales.html#confidentialite">politique de confidentialité</a> et je souhaite recevoir le guide.
+                </label>
               </div>
             </form>
             <p id="email-status" class="status-msg" role="status" aria-live="polite"></p>

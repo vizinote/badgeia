@@ -225,6 +225,11 @@ function trackEvent(event, path) {
         setStatus(statusEl, "Veuillez saisir une adresse email valide.", "error");
         return;
       }
+      const consentInput = document.getElementById("lead-consent");
+      if (!consentInput.checked) {
+        setStatus(statusEl, "Vous devez accepter la politique de confidentialité.", "error");
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = "Envoi en cours…";
@@ -237,6 +242,7 @@ function trackEvent(event, path) {
             email: email,
             url: lastScan.url,
             score: lastScan.score,
+            consent: true,
           }),
         });
         const data = await response.json();
@@ -248,6 +254,7 @@ function trackEvent(event, path) {
 
         setStatus(statusEl, "Merci ! Vous recevrez le rapport et le guide sous peu.", "success");
         input.value = "";
+        consentInput.checked = false;
       } catch (err) {
         setStatus(statusEl, "Réessayez dans quelques instants.", "error");
       } finally {
