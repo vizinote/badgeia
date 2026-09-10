@@ -381,7 +381,11 @@ def _is_public_ip(ip_str: str) -> bool:
 
 def assert_public_hostname(hostname: str) -> None:
     """Anti-SSRF : toutes les adresses IPv4 résolues doivent être publiques."""
-    infos = _orig_getaddrinfo(hostname, None, socket.AF_INET)
+    try:
+        infos = _orig_getaddrinfo(hostname, None, socket.AF_INET)
+    except socket.gaierror:
+        # NXDOMAIN / hôte introuvable : erreur de saisie du prospect, pas une panne.
+        raise ValueError("Impossible d'atteindre ce site — vérifiez l'adresse saisie.") from None
     ips = {info[4][0] for info in infos}
     if not ips:
         raise ValueError("Résolution DNS impossible.")
@@ -619,8 +623,9 @@ def scan():
         return make_cors_response({"ok": False, "error": str(exc)}, 400)
     except requests.exceptions.Timeout:
         return make_cors_response({"ok": False, "error": "Le site a mis trop de temps à répondre."}, 504)
-    except requests.exceptions.RequestException as exc:
-        return make_cors_response({"ok": False, "error": f"Impossible d'accéder au site : {exc}"}, 502)
+    except requests.exceptions.RequestException:
+        # Connexion refusée, reset, erreur TLS... : message propre, sans détail technique.
+        return make_cors_response({"ok": False, "error": "Impossible d'atteindre ce site — vérifiez l'adresse saisie."}, 502)
 
     systems = detect_systems(html)
     disclosure_found, disclosure_evidence = detect_disclosure(html)
