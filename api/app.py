@@ -670,11 +670,20 @@ def lead():
         return make_cors_response({"ok": False, "error": "Adresse email invalide."}, 400)
 
     try:
-        save_lead(email, url, score)
+        save_lead(email, url, score, source="scan")
     except sqlite3.Error as exc:
         return make_cors_response({"ok": False, "error": "Erreur de stockage. Réessayez plus tard."}, 500)
 
     send_telegram_alert(email, url, score)
+
+    # Le front n'envoie consent=true que si la case RGPD est cochée :
+    # jamais d'email sans consentement explicite.
+    if data.get("consent") is True:
+        try:
+            send_guide_email(email)
+        except Exception as exc:  # noqa: BLE001
+            app.logger.warning("Échec envoi email guide après stockage : %s", exc)
+
     return make_cors_response({"ok": True})
 
 
